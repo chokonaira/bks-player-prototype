@@ -52,7 +52,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
           )}
         </div>
 
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
           <button
             onClick={() => setCategory(null)}
             className={`shrink-0 rounded-full border px-4 py-1.5 text-xs tracking-wide transition ${
@@ -113,11 +113,12 @@ export default function Discovery({ children }: { children: ReactNode }) {
                 <button
                   key={c}
                   onClick={() => pickMood(c)}
-                  className={`group relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br ${moodCover(c)} transition hover:scale-[1.02]`}
+                  className={`group relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br ${moodCover(c)} shadow-lg shadow-black/10 transition hover:scale-[1.02]`}
                 >
+                  <span aria-hidden className="cover-texture" />
                   <span className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0" />
                   <span className="absolute inset-0 grid place-items-center px-3">
-                    <span className="rounded-full bg-black/45 px-4 py-1.5 text-sm text-white backdrop-blur-sm">
+                    <span className="rounded-full bg-black/45 px-4 py-1.5 font-serif text-sm italic text-white backdrop-blur-sm">
                       {c}
                     </span>
                   </span>

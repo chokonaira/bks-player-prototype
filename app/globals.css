@@ -15,11 +15,25 @@ html.light {
   --ink: 26 21 17;
 }
 body {
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-.font-serif { font-family: Georgia, "Times New Roman", serif; }
+.font-serif { font-family: var(--font-serif), Georgia, "Times New Roman", serif; }
 input[type="range"] { height: 4px; border-radius: 9999px; }
+
+/* hide rail scrollbars — content still scrolls */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* sheen + vignette so gradient covers read as designed artwork */
+.cover-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 15% 8%, rgba(255, 255, 255, 0.10), transparent 55%),
+    radial-gradient(140% 110% at 85% 100%, rgba(0, 0, 0, 0.40), transparent 60%);
+}
 
 button:focus-visible,
 a:focus-visible,

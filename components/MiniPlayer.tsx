@@ -34,7 +34,7 @@ export default function MiniPlayer() {
             <button onClick={() => setExpanded(true)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
               <div className={`h-10 w-10 shrink-0 rounded-md bg-gradient-to-br ${p.current.cover}`} />
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-ink">{p.current.title}</p>
+                <p className="truncate font-serif text-[15px] text-ink">{p.current.title}</p>
                 <p className="truncate text-xs text-ink/50">{p.current.voiceActor}</p>
               </div>
             </button>
@@ -59,7 +59,8 @@ export default function MiniPlayer() {
           <button onClick={() => setExpanded(false)} className="flex items-center gap-1 self-start text-sm text-ink/60">
             <ChevronDown className="h-4 w-4" /> Close
           </button>
-          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[240px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} ${p.playing ? "ambient-playing" : ""}`}>
+          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[240px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""}`}>
+            <span aria-hidden className="cover-texture" />
             <div className="ambient-blob ambient-blob-a" />
             <div className="ambient-blob ambient-blob-b" />
             <div className="ambient-spark" style={{ left: "20%", top: "68%" }} />
@@ -67,12 +68,12 @@ export default function MiniPlayer() {
             <div className="ambient-spark" style={{ left: "38%", top: "34%", animationDelay: "3.2s" }} />
             <div className="ambient-spark" style={{ left: "84%", top: "26%", animationDelay: "4.6s" }} />
             <div className="ambient-spark" style={{ left: "55%", top: "78%", animationDelay: "5.7s" }} />
-            <span className="absolute inset-0 grid place-items-center font-serif text-6xl text-white/15">
+            <span className="absolute inset-0 grid place-items-center font-serif text-6xl italic text-white/10">
               {initials(p.current.title)}
             </span>
           </div>
           <div className="mx-auto mt-6 w-full max-w-sm">
-            <h2 className="text-2xl font-semibold text-ink">{p.current.title}</h2>
+            <h2 className="font-serif text-3xl tracking-tight text-ink">{p.current.title}</h2>
             <p className="mt-1 text-ink/50">{p.current.voiceActor}</p>
 
             <input
@@ -154,7 +155,7 @@ export default function MiniPlayer() {
                       </span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm text-ink">{a.title}</p>
+                      <p className="truncate font-serif text-sm text-ink">{a.title}</p>
                       <p className="truncate text-xs text-ink/50">{a.voiceActor} · {Math.round(a.duration / 60)} min</p>
                     </div>
                     <Play className="h-4 w-4 shrink-0 text-ink/40" />

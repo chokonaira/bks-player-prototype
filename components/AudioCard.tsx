@@ -15,14 +15,15 @@ export default function AudioCard({ audio }: { audio: Audio }) {
     <div className="group relative w-40 shrink-0 md:w-48">
       <button
         onClick={() => play(audio)}
-        className={`relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br ${audio.cover}
+        className={`relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br ${audio.cover} shadow-lg shadow-black/10
           outline-none focus-visible:ring-2 focus-visible:ring-coral`}
       >
+        <span aria-hidden className="cover-texture" />
         {/* artwork label so it never looks like a broken image */}
-        <span className="absolute inset-0 grid place-items-center font-serif text-4xl text-white/15">
+        <span className="absolute inset-0 grid place-items-center font-serif text-4xl italic text-white/10">
           {initials(audio.title)}
         </span>
-        <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-left text-xs font-medium text-white/90">
+        <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2.5 text-left font-serif text-[13px] text-white/90">
           {audio.title}
         </span>
         <span className="absolute inset-0 grid place-items-center text-white opacity-0 transition group-hover:opacity-100">
@@ -41,7 +42,7 @@ export default function AudioCard({ audio }: { audio: Audio }) {
       >
         <Heart className={`h-3.5 w-3.5 transition ${fav ? "fill-coral text-coral" : "text-white/70"}`} strokeWidth={1.8} />
       </button>
-      <Link href={`/audio/${audio.id}`} className="mt-2 block truncate text-sm font-medium text-ink hover:text-coral">
+      <Link href={`/audio/${audio.id}`} className="mt-2 block truncate font-serif text-[15px] text-ink hover:text-coral">
         {audio.title}
       </Link>
       <p className="truncate text-xs text-ink/50">{audio.voiceActor}</p>

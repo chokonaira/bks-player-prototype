@@ -35,10 +35,11 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
   return (
     <article className="mx-auto max-w-2xl">
       {/* hero */}
-      <div className={`relative aspect-video w-full overflow-hidden rounded-2xl bg-gradient-to-br ${audio.cover} ${isPlaying ? "ambient-playing" : ""}`}>
+      <div className={`relative aspect-video w-full overflow-hidden rounded-2xl bg-gradient-to-br ${audio.cover} shadow-xl shadow-black/15 ${isPlaying ? "ambient-playing" : ""}`}>
+        <span aria-hidden className="cover-texture" />
         <div className="ambient-blob ambient-blob-a" />
         <div className="ambient-blob ambient-blob-b" />
-        <span className="absolute inset-0 grid place-items-center font-serif text-7xl text-white/10">
+        <span className="absolute inset-0 grid place-items-center font-serif text-7xl italic text-white/10">
           {initials(audio.title)}
         </span>
         <span className="absolute left-3 top-3 rounded-full bg-black/50 px-3 py-1 text-xs text-white/80 backdrop-blur-sm">
