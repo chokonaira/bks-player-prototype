@@ -8,12 +8,16 @@ import { AUDIOS, type Audio } from "@/lib/mockData";
 
 type PlayerState = {
   current: Audio | null;
+  completed: Audio | null;
   playing: boolean;
   time: number;
   duration: number;
   speed: number;
   sleepRemaining: number | null; // seconds left, null = off
   play: (a: Audio) => void;
+  replay: (a?: Audio) => void;
+  playNextFrom: (a: Audio) => void;
+  dismissAfterglow: () => void;
   toggle: () => void;
   seek: (t: number) => void;
   skip: (delta: number) => void;
@@ -31,6 +35,7 @@ export const usePlayer = () => {
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [current, setCurrent] = useState<Audio | null>(null);
+  const [completed, setCompleted] = useState<Audio | null>(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -49,18 +54,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     audioRef.current = el;
     const onTime = () => setTime(el.currentTime);
     const onMeta = () => setDuration(el.duration || 0);
-    // auto-advance: when a track ends, play the next one in catalog order
     const onEnd = () => {
       const cur = currentRef.current;
       if (!cur) { setPlaying(false); return; }
-      const idx = AUDIOS.findIndex((a) => a.id === cur.id);
-      const next = AUDIOS[(idx + 1) % AUDIOS.length];
-      el.src = next.src;
-      el.playbackRate = speedRef.current;
-      el.currentTime = 0;
-      currentRef.current = next;
-      setCurrent(next);
-      el.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      setPlaying(false);
+      setTime(el.duration || el.currentTime || 0);
+      setSleepRemaining(null);
+      setCompleted(cur);
     };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("loadedmetadata", onMeta);
@@ -76,6 +76,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const play = useCallback((a: Audio) => {
     const el = audioRef.current;
     if (!el) return;
+    setCompleted(null);
     if (current?.id !== a.id) {
       el.src = a.src;
       el.playbackRate = speed;
@@ -92,20 +93,60 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     el.play().then(() => setPlaying(true)).catch(() => {});
   }, [current, speed]);
 
+  const replay = useCallback((a?: Audio) => {
+    const el = audioRef.current;
+    const target = a ?? currentRef.current ?? current;
+    if (!el || !target) return;
+    setCompleted(null);
+    if (currentRef.current?.id !== target.id) {
+      el.src = target.src;
+      currentRef.current = target;
+      setCurrent(target);
+    }
+    el.playbackRate = speedRef.current;
+    el.currentTime = 0;
+    setTime(0);
+    el.play().then(() => setPlaying(true)).catch(() => {});
+  }, [current]);
+
+  const playNextFrom = useCallback((a: Audio) => {
+    const idx = AUDIOS.findIndex((item) => item.id === a.id);
+    const next = AUDIOS[(idx + 1) % AUDIOS.length] ?? AUDIOS[0];
+    replay(next);
+  }, [replay]);
+
+  const dismissAfterglow = useCallback(() => {
+    setCompleted(null);
+  }, []);
+
   const toggle = useCallback(() => {
     const el = audioRef.current;
     if (!el || !current) return;
     if (playing) { el.pause(); setPlaying(false); }
-    else { el.play().then(() => setPlaying(true)).catch(() => {}); }
-  }, [playing, current]);
+    else {
+      if (el.ended || completed) {
+        el.currentTime = 0;
+        setTime(0);
+        setCompleted(null);
+      }
+      el.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  }, [playing, current, completed]);
 
   const seek = useCallback((t: number) => {
-    if (audioRef.current) { audioRef.current.currentTime = t; setTime(t); }
+    if (audioRef.current) {
+      audioRef.current.currentTime = t;
+      setTime(t);
+      setCompleted(null);
+    }
   }, []);
 
   const skip = useCallback((delta: number) => {
     const el = audioRef.current;
-    if (el) { el.currentTime = Math.max(0, el.currentTime + delta); }
+    if (el) {
+      el.currentTime = Math.max(0, el.currentTime + delta);
+      setCompleted(null);
+    }
   }, []);
 
   const setSpeed = useCallback((s: number) => {
@@ -136,8 +177,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   return (
     <Ctx.Provider value={{
-      current, playing, time, duration, speed, sleepRemaining,
-      play, toggle, seek, skip, setSpeed, setSleep,
+      current, completed, playing, time, duration, speed, sleepRemaining,
+      play, replay, playNextFrom, dismissAfterglow, toggle, seek, skip, setSpeed, setSleep,
     }}>
       {children}
     </Ctx.Provider>

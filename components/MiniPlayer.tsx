@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type UIEvent } from "react";
 import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw } from "lucide-react";
@@ -8,6 +8,7 @@ import { useLocale } from "./LocaleProvider";
 import { useOffline } from "@/lib/useOffline";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import SeekBar from "./SeekBar";
+import AfterglowPanel from "./AfterglowPanel";
 
 const fmt = (s: number) => {
   if (!s || isNaN(s)) return "0:00";
@@ -25,8 +26,28 @@ export default function MiniPlayer() {
   const online = useOnlineStatus();
   const locked = !online && !savedOffline;
   const [expanded, setExpanded] = useState(false);
+  const [artCompact, setArtCompact] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
   if (!p.current) return null;
+  const sleepActive = p.sleepRemaining !== null;
+
+  const openExpanded = () => {
+    setArtCompact(false);
+    setExpanded(true);
+  };
+
+  const closeExpanded = () => {
+    setExpanded(false);
+    setArtCompact(false);
+  };
+
+  const handleExpandedScroll = (event: UIEvent<HTMLDivElement>) => {
+    const scrollTop = event.currentTarget.scrollTop;
+    setArtCompact((compact) => {
+      const next = compact ? scrollTop > 24 : scrollTop > 72;
+      return compact === next ? compact : next;
+    });
+  };
 
   return (
     <>
@@ -37,11 +58,13 @@ export default function MiniPlayer() {
             <SeekBar compact value={p.time} max={p.duration} onSeek={p.seek} />
           </div>
           <div className="flex items-center gap-3 px-4 py-2">
-            <button onClick={() => setExpanded(true)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
+            <button onClick={openExpanded} className="flex min-w-0 flex-1 items-center gap-3 text-left">
               <div className={`h-10 w-10 shrink-0 rounded-md bg-gradient-to-br ${p.current.cover}`} />
               <div className="min-w-0">
                 <p className="truncate font-serif text-[15px] text-ink">{p.current.title}</p>
-                <p className="truncate text-xs text-ink/50">{p.current.voiceActor}</p>
+                <p className={`truncate text-xs ${p.completed ? "text-coral" : "text-ink/50"}`}>
+                  {p.completed ? t("afterglow.ready") : p.current.voiceActor}
+                </p>
               </div>
             </button>
             <button onClick={() => p.skip(-15)} aria-label="Back 15 seconds" className="relative grid place-items-center text-ink/70 hover:text-ink">
@@ -61,26 +84,83 @@ export default function MiniPlayer() {
 
       {/* EXPANDED FULL-SCREEN */}
       {expanded && (
-        <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-base px-6 pb-10 pt-6">
-          <button onClick={() => setExpanded(false)} className="flex items-center gap-1 self-start text-sm text-ink/60">
-            <ChevronDown className="h-4 w-4" /> {t("player.close")}
-          </button>
-          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[300px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""}`}>
-            <span aria-hidden className="cover-texture" />
-            <div className="ambient-blob ambient-blob-a" />
-            <div className="ambient-blob ambient-blob-b" />
-            <div className="ambient-spark" style={{ left: "20%", top: "68%" }} />
-            <div className="ambient-spark" style={{ left: "72%", top: "58%", animationDelay: "1.8s" }} />
-            <div className="ambient-spark" style={{ left: "38%", top: "34%", animationDelay: "3.2s" }} />
-            <div className="ambient-spark" style={{ left: "84%", top: "26%", animationDelay: "4.6s" }} />
-            <div className="ambient-spark" style={{ left: "55%", top: "78%", animationDelay: "5.7s" }} />
-            <span className="absolute inset-0 grid place-items-center font-serif text-6xl italic text-white/10">
-              {initials(p.current.title)}
-            </span>
+        <div
+          onScroll={handleExpandedScroll}
+          className={`fixed inset-0 z-50 overflow-y-auto bg-base pb-10 transition-colors duration-500 ${sleepActive ? "sleep-ritual" : ""}`}
+        >
+          <div
+            className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-all duration-300 ${
+              artCompact ? "pb-3 shadow-lg shadow-black/5" : "pb-2"
+            }`}
+          >
+            <div className="relative mx-auto w-full max-w-sm">
+              <button
+                onClick={closeExpanded}
+                aria-label={t("player.close")}
+                className={`transition-all duration-300 ${
+                  artCompact
+                    ? "absolute left-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-black/45 text-white/90 backdrop-blur hover:bg-black/60"
+                    : "mb-4 flex items-center gap-1 text-sm text-ink/60 hover:text-ink"
+                }`}
+              >
+                <ChevronDown className="h-4 w-4" />
+                <span className={artCompact ? "sr-only" : ""}>{t("player.close")}</span>
+              </button>
+              <div className={`relative mx-auto w-full shrink-0 overflow-hidden bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 transition-all duration-300 ease-out ${p.playing ? "ambient-playing" : ""} ${sleepActive ? "sleep-ritual-art" : ""} ${
+                artCompact
+                  ? "h-28 max-w-md rounded-xl"
+                  : "aspect-square max-w-[300px] rounded-2xl"
+              }`}>
+                <span aria-hidden className="cover-texture" />
+                <div className="ambient-blob ambient-blob-a" />
+                <div className="ambient-blob ambient-blob-b" />
+                <div className="ambient-spark" style={{ left: "20%", top: "68%" }} />
+                <div className="ambient-spark" style={{ left: "72%", top: "58%", animationDelay: "1.8s" }} />
+                <div className="ambient-spark" style={{ left: "38%", top: "34%", animationDelay: "3.2s" }} />
+                <div className="ambient-spark" style={{ left: "84%", top: "26%", animationDelay: "4.6s" }} />
+                <div className="ambient-spark" style={{ left: "55%", top: "78%", animationDelay: "5.7s" }} />
+                <span className={`absolute inset-0 grid place-items-center font-serif italic text-white/10 transition-all duration-300 ${
+                  artCompact ? "text-5xl" : "text-6xl"
+                }`}>
+                  {initials(p.current.title)}
+                </span>
+                {sleepActive && (
+                  <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-xs text-white/85 backdrop-blur">
+                    <Moon className="h-3.5 w-3.5" strokeWidth={1.8} />
+                    {fmt(p.sleepRemaining ?? 0)}
+                  </span>
+                )}
+                <div className={`absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/70 to-transparent p-3 text-white transition-all duration-300 ${
+                  artCompact ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
+                }`}>
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wide text-coral">{t("player.nowPlaying")}</p>
+                    <p className="truncate font-serif text-base text-white">{p.current.title}</p>
+                  </div>
+                  <button
+                    onClick={p.toggle}
+                    aria-label={p.playing ? "Pause" : "Play"}
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-coral text-black shadow-lg"
+                  >
+                    {p.playing ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 translate-x-px fill-current" />}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="mx-auto mt-6 w-full max-w-sm">
             <h2 className="font-serif text-3xl tracking-tight text-ink">{p.current.title}</h2>
             <p className="mt-1 text-ink/50">{p.current.voiceActor}</p>
+
+            {p.completed && (
+              <AfterglowPanel
+                audio={p.completed}
+                locked={locked}
+                onDismiss={p.dismissAfterglow}
+                onPlay={p.play}
+                onReplay={p.replay}
+              />
+            )}
 
             <div className="mt-6">
               <SeekBar value={p.time} max={p.duration} onSeek={p.seek} />
@@ -118,10 +198,33 @@ export default function MiniPlayer() {
 
             {/* sleep timer */}
             <div className="mt-4">
-              <button onClick={() => setSleepOpen((o) => !o)} className="flex items-center gap-2 text-sm text-ink/70">
+              <button
+                onClick={() => setSleepOpen((o) => !o)}
+                className={`flex items-center gap-2 text-sm transition ${
+                  sleepActive
+                    ? "rounded-full bg-coral/10 px-3 py-2 text-coral"
+                    : "text-ink/70 hover:text-ink"
+                }`}
+              >
                 <Moon className="h-4 w-4" strokeWidth={1.8} />
                 {t("player.sleepTimer")} {p.sleepRemaining !== null ? `· ${fmt(p.sleepRemaining)}` : ""}
               </button>
+              {sleepActive && (
+                <div className="mt-3 rounded-2xl border border-coral/15 bg-coral/10 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[10px] uppercase tracking-wide text-coral">{t("player.sleepActive")}</p>
+                      <p className="mt-0.5 truncate text-sm text-ink/70">{fmt(p.sleepRemaining ?? 0)}</p>
+                    </div>
+                    <button
+                      onClick={() => p.setSleep(null)}
+                      className="shrink-0 rounded-full bg-base/70 px-3 py-1.5 text-xs text-ink/70 transition hover:bg-base hover:text-ink"
+                    >
+                      {t("player.cancel")}
+                    </button>
+                  </div>
+                </div>
+              )}
               {sleepOpen && (
                 <div className="mt-2 flex gap-2">
                   {SLEEP_OPTS.map((m) => (
