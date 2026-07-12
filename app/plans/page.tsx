@@ -8,18 +8,21 @@ const TIERS = [
   {
     id: "secret",
     name: "Secret Tier",
+    rank: 3,
     price: "$10.99",
     perks: ["12–14 new audios / month", "Full 900+ audio library", "Members-only Discord", "Priority story requests"],
   },
   {
     id: "angel",
     name: "Angel Tier",
+    rank: 2,
     price: "$7.99",
     perks: ["8–10 new audios / month", "Full 900+ audio library", "Members-only Discord"],
   },
   {
     id: "honey",
     name: "Honey Tier",
+    rank: 1,
     price: "$4.99",
     perks: ["4–6 new audios / month", "Standard library access"],
   },
@@ -28,6 +31,7 @@ const TIERS = [
 export default function Plans() {
   const { t } = useLocale();
   const [active, setActive] = useState("secret");
+  const activeRank = TIERS.find((x) => x.id === active)?.rank ?? 0;
   const [note, setNote] = useState<string | null>(null);
 
   const flash = (msg: string) => {
@@ -91,7 +95,7 @@ export default function Plans() {
                   onClick={() => { setActive(tier.id); flash(t("plans.switched")); }}
                   className="mt-4 rounded-full bg-coral px-4 py-2 text-sm font-medium text-black transition hover:opacity-90"
                 >
-                  {t("plans.switch")}
+                  {tier.rank > activeRank ? t("plans.upgrade") : t("plans.downgrade")}
                 </button>
               )}
             </div>
