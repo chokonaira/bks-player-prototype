@@ -81,7 +81,7 @@ export default function Plans() {
                 <>
                   <p className="mt-4 flex items-center gap-1.5 text-xs text-ink/50">
                     <CalendarDays className="h-3.5 w-3.5" strokeWidth={1.8} />
-                    Feb 13, 2026 — Dec 31, 2099
+                    Feb 13, 2026 – Dec 31, 2099
                   </p>
                   <button
                     onClick={() => flash(t("plans.cancelNote"))}

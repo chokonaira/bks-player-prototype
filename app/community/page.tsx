@@ -15,7 +15,7 @@ type Idea = { text: string; author: string; likes: number; liked: boolean };
 
 const SEED_IDEAS: Idea[] = [
   { text: "A slow dance in the kitchen at 2am, no music, just him humming", author: "Community", likes: 41, liked: false },
-  { text: "He reads to you until you fall asleep — and keeps reading anyway", author: "Community", likes: 33, liked: false },
+  { text: "He reads to you until you fall asleep, and keeps reading anyway", author: "Community", likes: 33, liked: false },
 ];
 
 export default function Community() {

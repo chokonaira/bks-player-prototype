@@ -14,7 +14,7 @@ import TopNav from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: {
-    default: "BKS — Player Prototype",
+    default: "BKS Player Prototype",
     template: "%s · BKS Player Prototype",
   },
   description:
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   applicationName: "BKS Player Prototype",
   manifest: "/manifest.json",
   openGraph: {
-    title: "BKS — Player Prototype",
+    title: "BKS Player Prototype",
     description:
       "Mobile-first player & discovery concept: persistent mini-player, resume, sleep timer, bottom-tab navigation.",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "BKS — Player Prototype",
+    title: "BKS Player Prototype",
     description: "Mobile-first player & discovery concept for Best Kept Secret.",
   },
 };

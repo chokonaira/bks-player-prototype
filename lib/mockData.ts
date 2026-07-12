@@ -29,11 +29,11 @@ export const AUDIOS: Audio[] = [
     src: "/audio/sample-1.mp3",
     progress: 0.32,
     description:
-      "You all met young, and the friendship was always meant to be. One snowed-in weekend, years of unspoken history finally come to light — honesty, warmth, and a fresh start.",
+      "You all met young, and the friendship was always meant to be. One snowed-in weekend, years of unspoken history finally come to light. Honesty, warmth, and a fresh start.",
     likes: 75,
     comments: [
       { author: "sky0927", when: "2d ago", text: "Omg, so good. I could practically see myself in that situation." },
-      { author: "moonlit_reader", when: "5d ago", text: "The aftercare part had me tearing up. Nobody writes that — BKS does." },
+      { author: "moonlit_reader", when: "5d ago", text: "The aftercare part had me tearing up. Nobody writes that. BKS does." },
     ],
   },
   {
