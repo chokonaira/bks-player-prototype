@@ -42,6 +42,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   // one <audio> element for the whole app -> playback persists across routes
   useEffect(() => {
     const el = new window.Audio();
+    // let speed changes shift pitch too — audible even on ambient placeholder
+    // tones; real spoken-word would re-enable pitch preservation
+    el.preservesPitch = false;
+    (el as any).webkitPreservesPitch = false;
     audioRef.current = el;
     const onTime = () => setTime(el.currentTime);
     const onMeta = () => setDuration(el.duration || 0);
