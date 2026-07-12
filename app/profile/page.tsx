@@ -134,19 +134,34 @@ export default function Profile() {
           </span>
         </button>
 
-        <button onClick={() => setSleepIdx((i) => (i + 1) % SLEEP_DEFAULTS.length)}
-          className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
-            <Moon className="h-5 w-5" strokeWidth={1.8} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm text-ink">{t("profile.sleepDefault")}</span>
-            <span className="block truncate text-xs text-ink/50">{t("profile.tapToChange")}</span>
-          </span>
-          <span className="shrink-0 rounded-full bg-coral/15 px-3 py-1 text-xs text-coral">
-            {SLEEP_DEFAULTS[sleepIdx]} {t("profile.fade")}
-          </span>
-        </button>
+        <div className="w-full rounded-2xl border border-ink/10 bg-ink/[0.03] p-4">
+          <div className="flex items-center gap-4">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
+              <Moon className="h-5 w-5" strokeWidth={1.8} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-ink">{t("profile.sleepDefault")}</span>
+              <span className="block truncate text-xs text-ink/50">{t("profile.tapToChange")}</span>
+            </span>
+          </div>
+          <div className="mt-4 grid grid-cols-4 overflow-hidden rounded-full border border-ink/15 text-xs">
+            {SLEEP_DEFAULTS.map((minutes, index) => (
+              <button
+                key={minutes}
+                onClick={() => setSleepIdx(index)}
+                aria-pressed={sleepIdx === index}
+                aria-label={`${minutes} ${t("profile.fade")}`}
+                className={`px-2 py-1.5 transition ${
+                  sleepIdx === index
+                    ? "bg-coral text-black"
+                    : "text-ink/50 hover:bg-ink/5 hover:text-ink"
+                }`}
+              >
+                {minutes}m
+              </button>
+            ))}
+          </div>
+        </div>
 
         <button onClick={() => { setSignOutNote(true); setTimeout(() => setSignOutNote(false), 2500); }}
           className="flex w-full items-center gap-4 rounded-2xl border border-ink/5 p-4 text-left text-ink/40 transition hover:text-ink/70">

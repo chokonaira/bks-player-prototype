@@ -20,6 +20,13 @@ test("desktop library views use wider shell and lg grids", () => {
   assert.match(read("components/Discovery.tsx"), /lg:flex-wrap/);
 });
 
+test("profile sleep timer uses explicit segmented presets", () => {
+  const profile = read("app/profile/page.tsx");
+  assert.match(profile, /SLEEP_DEFAULTS\.map/);
+  assert.match(profile, /aria-pressed=\{sleepIdx === index\}/);
+  assert.doesNotMatch(profile, /setSleepIdx\(\(i\) => \(i \+ 1\)/);
+});
+
 test("mock catalog is large enough to exercise shelves and queue depth", () => {
   const mockData = read("lib/mockData.ts");
   assert.ok(count(mockData, "id:") >= 7);
