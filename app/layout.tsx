@@ -3,6 +3,7 @@ import "./globals.css";
 import { PlayerProvider } from "@/components/PlayerProvider";
 import MiniPlayer from "@/components/MiniPlayer";
 import BottomNav from "@/components/BottomNav";
+import TopNav from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: {
@@ -33,9 +34,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#0d0d0d] text-white antialiased">
+      <body className="min-h-screen bg-base text-ink antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem('bks-theme')==='light')document.documentElement.classList.add('light')}catch(e){}`,
+          }}
+        />
         <PlayerProvider>
-          <main className="mx-auto max-w-5xl px-4 pb-40 pt-6">{children}</main>
+          <TopNav />
+          <main className="mx-auto max-w-5xl px-4 pb-40 pt-6 md:pt-8">{children}</main>
           <MiniPlayer />
           <BottomNav />
         </PlayerProvider>

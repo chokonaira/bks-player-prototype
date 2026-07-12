@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; }
-body { font-family: system-ui, sans-serif; }
+:root {
+  color-scheme: dark;
+  --bg: 13 13 13;
+  --surface: 20 20 20;
+  --ink: 255 255 255;
+}
+html.light {
+  color-scheme: light;
+  --bg: 241 238 230;
+  --surface: 250 248 243;
+  --ink: 26 21 17;
+}
+body {
+  font-family: system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 .font-serif { font-family: Georgia, "Times New Roman", serif; }
 input[type="range"] { height: 4px; border-radius: 9999px; }
 
@@ -12,7 +26,6 @@ a:focus-visible,
 input:focus-visible {
   outline: 2px solid #E8654F;
   outline-offset: 2px;
-  border-radius: 6px;
 }
 
 /* ambient cover art — warm glow drift + ember sparks; runs only while playing */
