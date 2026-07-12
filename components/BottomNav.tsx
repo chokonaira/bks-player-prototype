@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, Star, User } from "lucide-react";
+import { Home, Search, Heart, Users, User } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
 
 const TABS = [
   { key: "nav.home", href: "/", Icon: Home },
   { key: "nav.browse", href: "/browse", Icon: Search },
-  { key: "nav.community", href: "/community", Icon: Heart },
-  { key: "nav.favorites", href: "/favorites", Icon: Star },
+  { key: "nav.community", href: "/community", Icon: Users },
+  { key: "nav.favorites", href: "/favorites", Icon: Heart },
   { key: "nav.profile", href: "/profile", Icon: User },
 ];
 
