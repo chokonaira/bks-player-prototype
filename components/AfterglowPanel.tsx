@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Check, Heart, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Check, Heart, RotateCcw, Sparkles, X } from "lucide-react";
 import { AUDIOS, initials, type Audio } from "@/lib/mockData";
 import { useFavorites } from "@/lib/useFavorites";
 import { AFTERGLOW_MOODS, recommendationFor } from "@/lib/afterglowRecommendations.mjs";
@@ -38,13 +38,19 @@ export default function AfterglowPanel({
   }, [audio.id]);
 
   return (
-    <section className="mt-5 overflow-hidden rounded-2xl border border-coral/20 bg-gradient-to-br from-coral/10 via-ink/[0.03] to-transparent shadow-lg shadow-black/5">
+    <section className="afterglow-callout relative mt-5 overflow-hidden rounded-2xl border border-coral/35 bg-gradient-to-br from-coral/15 via-surface to-coral/[0.04] shadow-xl shadow-coral/10 ring-1 ring-coral/10">
+      <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-coral" />
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-coral">{t("afterglow.eyebrow")}</p>
-            <h3 className="mt-1 font-serif text-2xl leading-tight text-ink">{t("afterglow.title")}</h3>
-            <p className="mt-1 text-xs leading-relaxed text-ink/55">{t("afterglow.note")}</p>
+          <div className="flex min-w-0 gap-3">
+            <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-coral text-black shadow-md shadow-coral/25">
+              <Sparkles className="h-4 w-4" strokeWidth={2} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-coral">{t("afterglow.eyebrow")}</p>
+              <h3 className="mt-1 font-serif text-2xl leading-tight text-ink">{t("afterglow.title")}</h3>
+              <p className="mt-1 text-xs leading-relaxed text-ink/60">{t("afterglow.note")}</p>
+            </div>
           </div>
           <button
             onClick={onDismiss}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type UIEvent } from "react";
+import { useEffect, useState, type UIEvent } from "react";
 import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw, Heart } from "lucide-react";
@@ -31,6 +31,21 @@ export default function MiniPlayer() {
   const [artCompact, setArtCompact] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
   const [momentSaved, setMomentSaved] = useState(false);
+  useEffect(() => {
+    if (!expanded) return;
+    const bodyOverflow = document.body.style.overflow;
+    const bodyOverscroll = document.body.style.overscrollBehavior;
+    const htmlOverscroll = document.documentElement.style.overscrollBehavior;
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    document.documentElement.style.overscrollBehavior = "none";
+    return () => {
+      document.body.style.overflow = bodyOverflow;
+      document.body.style.overscrollBehavior = bodyOverscroll;
+      document.documentElement.style.overscrollBehavior = htmlOverscroll;
+    };
+  }, [expanded]);
+
   if (!p.current) return null;
   const sleepActive = p.sleepRemaining !== null;
 
@@ -99,7 +114,7 @@ export default function MiniPlayer() {
       {expanded && (
         <div
           onScroll={handleExpandedScroll}
-          className={`fixed inset-0 z-50 overflow-y-auto bg-base pb-10 transition-colors duration-500 lg:px-8 ${sleepActive ? "sleep-ritual" : ""}`}
+          className={`no-scrollbar fixed inset-0 z-50 overflow-y-auto overscroll-y-contain bg-base pb-10 transition-colors duration-500 lg:px-8 ${sleepActive ? "sleep-ritual" : ""}`}
         >
           <div className="lg:grid lg:min-h-screen lg:grid-cols-[minmax(360px,480px)_minmax(440px,560px)] lg:items-start lg:justify-center lg:gap-16 lg:py-12">
           <div

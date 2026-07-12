@@ -1,16 +1,22 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { AudioLines, Pause, Play, Volume2 } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
 import { usePlayer } from "@/components/PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 
-const featuredAudio = AUDIOS[1] ?? AUDIOS[0];
-const sideAudios = [AUDIOS[0], AUDIOS[2]].filter(Boolean);
+const FEATURED_AUDIOS = [AUDIOS[1], AUDIOS[0], AUDIOS[2]].filter((audio): audio is NonNullable<typeof audio> => Boolean(audio));
 
 export default function FeaturedListenPanel() {
   const { t } = useLocale();
-  const { current, playing, play, toggle } = usePlayer();
+  const { current, completed, playing, play, toggle } = usePlayer();
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const featuredAudio = FEATURED_AUDIOS[selectedIdx] ?? AUDIOS[0];
+  const sideAudios = useMemo(
+    () => FEATURED_AUDIOS.filter((audio) => audio.id !== featuredAudio.id),
+    [featuredAudio.id]
+  );
   const isCurrent = current?.id === featuredAudio.id;
 
   const onPlay = () => {
@@ -20,6 +26,22 @@ export default function FeaturedListenPanel() {
     }
     play(featuredAudio);
   };
+
+  const selectAudio = (audioId: string) => {
+    const nextIdx = FEATURED_AUDIOS.findIndex((audio) => audio.id === audioId);
+    if (nextIdx !== -1) setSelectedIdx(nextIdx);
+  };
+
+  useEffect(() => {
+    if (!completed) return;
+    const completedIdx = FEATURED_AUDIOS.findIndex((audio) => audio.id === completed.id);
+    if (completedIdx === -1) return;
+    const nextIdx = (completedIdx + 1) % FEATURED_AUDIOS.length;
+    const nextAudio = FEATURED_AUDIOS[nextIdx];
+    if (!nextAudio) return;
+    setSelectedIdx(nextIdx);
+    play(nextAudio);
+  }, [completed, play]);
 
   return (
     <section className="relative my-10 overflow-hidden py-4 md:my-12 md:py-8">
@@ -38,7 +60,11 @@ export default function FeaturedListenPanel() {
         <div className="relative h-[430px] md:h-[450px]">
           <div className="absolute inset-x-[-3rem] top-12 flex justify-between gap-3 opacity-70 md:inset-x-[-5rem]">
             {sideAudios.map((audio) => (
-              <div key={audio.id} className="w-40 overflow-hidden rounded-lg bg-surface shadow-lg shadow-black/10 md:w-48">
+              <button
+                key={audio.id}
+                onClick={() => selectAudio(audio.id)}
+                className="w-40 overflow-hidden rounded-lg bg-surface text-left shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:opacity-100 md:w-48"
+              >
                 <div className={`relative aspect-[3/4] bg-gradient-to-br ${audio.cover}`}>
                   <span aria-hidden className="cover-texture" />
                   <span className="absolute inset-0 grid place-items-center font-serif text-3xl italic text-white/10">
@@ -49,7 +75,7 @@ export default function FeaturedListenPanel() {
                   <p className="truncate font-serif text-sm text-ink">{audio.title}</p>
                   <p className="truncate text-xs text-ink/50">{audio.voiceActor}</p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
