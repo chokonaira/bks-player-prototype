@@ -5,6 +5,8 @@ import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
+import { useOffline } from "@/lib/useOffline";
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import SeekBar from "./SeekBar";
 
 const fmt = (s: number) => {
@@ -19,6 +21,9 @@ const SLEEP_OPTS = [10, 20, 30, 45];
 export default function MiniPlayer() {
   const p = usePlayer();
   const { t } = useLocale();
+  const { enabled: savedOffline } = useOffline();
+  const online = useOnlineStatus();
+  const locked = !online && !savedOffline;
   const [expanded, setExpanded] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
   if (!p.current) return null;
@@ -163,8 +168,8 @@ export default function MiniPlayer() {
                   const idx = AUDIOS.findIndex((a) => a.id === p.current!.id);
                   return [...AUDIOS.slice(idx + 1), ...AUDIOS.slice(0, idx)].slice(0, 3);
                 })().map((a) => (
-                  <button key={a.id} onClick={() => p.play(a)}
-                    className="group flex w-full items-center gap-3 p-3 text-left transition hover:bg-ink/[0.04]">
+                  <button key={a.id} onClick={() => !locked && p.play(a)} aria-disabled={locked}
+                    className={`group flex w-full items-center gap-3 p-3 text-left transition hover:bg-ink/[0.04] ${locked ? "cursor-not-allowed opacity-40 grayscale" : ""}`}>
                     <div className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
                       <span className="absolute inset-0 grid place-items-center font-serif text-sm italic text-white/25">
                         {initials(a.title)}

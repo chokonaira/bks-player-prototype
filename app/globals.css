@@ -18,7 +18,23 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-.font-serif { font-family: var(--font-serif), Georgia, "Times New Roman", serif; }
+.font-serif { font-family: var(--font-serif), Georgia, "Times New Roman", serif; font-weight: 500; }
+
+/* light mode: white cards on cream + darker secondary text, matching the
+   contrast of the production app */
+html.light .bg-ink\/\[0\.02\],
+html.light .bg-ink\/\[0\.03\],
+html.light .bg-ink\/\[0\.04\] {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgb(26 21 17 / 0.07);
+}
+html.light .text-ink\/35 { color: rgb(var(--ink) / 0.5); }
+html.light .text-ink\/40 { color: rgb(var(--ink) / 0.56); }
+html.light .text-ink\/45 { color: rgb(var(--ink) / 0.58); }
+html.light .text-ink\/50 { color: rgb(var(--ink) / 0.64); }
+html.light .text-ink\/60 { color: rgb(var(--ink) / 0.74); }
+html.light .text-ink\/70 { color: rgb(var(--ink) / 0.82); }
+html.light .border-ink\/10 { border-color: rgb(var(--ink) / 0.13); }
 input[type="range"] { height: 4px; border-radius: 9999px; }
 
 /* iOS Safari zooms the viewport when focusing fields under 16px — pin them */

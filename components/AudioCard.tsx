@@ -7,23 +7,28 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Play, Pause, Heart, ArrowDownToLine } from "lucide-react";
 import { useOffline } from "@/lib/useOffline";
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import { useLocale } from "./LocaleProvider";
 
 export default function AudioCard({ audio }: { audio: Audio }) {
   const { play, current, playing } = usePlayer();
   const { isFav, toggle } = useFavorites();
   const { enabled: savedOffline } = useOffline();
+  const online = useOnlineStatus();
   const { t } = useLocale();
   const router = useRouter();
   const isCurrent = current?.id === audio.id;
   const fav = isFav(audio.id);
+  // offline without a saved copy -> browsable but not playable, like Spotify
+  const locked = !online && !savedOffline;
   return (
-    <div className="group w-40 shrink-0 md:w-48">
+    <div className={`group w-40 shrink-0 md:w-48 transition ${locked ? "opacity-40 grayscale" : ""}`}>
       <div className="relative">
       <button
-        onClick={() => play(audio)}
+        onClick={() => !locked && play(audio)}
+        aria-disabled={locked}
         className={`relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br ${audio.cover} shadow-lg shadow-black/10
-          outline-none focus-visible:ring-2 focus-visible:ring-coral`}
+          outline-none focus-visible:ring-2 focus-visible:ring-coral ${locked ? "cursor-not-allowed" : ""}`}
       >
         <span aria-hidden className="cover-texture" />
         {/* artwork label so it never looks like a broken image */}
@@ -63,7 +68,7 @@ export default function AudioCard({ audio }: { audio: Audio }) {
       <Link href={`/audio/${audio.id}`} className="mt-2 block truncate font-serif text-[15px] text-ink hover:text-coral">
         {audio.title}
       </Link>
-      <p className="truncate text-xs text-ink/50">{audio.voiceActor}</p>
+      <p className="truncate text-xs text-coral/90">{audio.voiceActor}</p>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { useLocalAdditions } from "@/lib/useLocalAdditions";
 import { useLocale } from "@/components/LocaleProvider";
 import { Play, Pause, Heart, Bookmark, Clock, ArrowDownToLine } from "lucide-react";
 import { useOffline } from "@/lib/useOffline";
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
 
 export default function AudioDetail({ params }: { params: { id: string } }) {
   const audio = AUDIOS.find((a) => a.id === params.id);
@@ -16,6 +17,8 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
   const { t } = useLocale();
   const { isFav, toggle: toggleFav } = useFavorites();
   const { enabled: savedOffline } = useOffline();
+  const online = useOnlineStatus();
+  const locked = !online && !savedOffline;
   const [liked, setLiked] = useState(false);
   const { items: comments, add: addComment } = useLocalAdditions<Comment>(
     `bks-comments-${params.id}`,
@@ -69,8 +72,9 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
       {/* actions */}
       <div className="mt-6 flex items-center gap-3">
         <button
-          onClick={() => (isCurrent ? toggle() : play(audio))}
-          className="flex items-center gap-2 rounded-full bg-coral px-6 py-2.5 text-sm font-medium text-black transition hover:opacity-90"
+          onClick={() => !locked && (isCurrent ? toggle() : play(audio))}
+          aria-disabled={locked}
+          className={`flex items-center gap-2 rounded-full bg-coral px-6 py-2.5 text-sm font-medium text-black transition hover:opacity-90 ${locked ? "cursor-not-allowed opacity-40 grayscale" : ""}`}
         >
           {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
           {isPlaying ? t("detail.pause") : isCurrent ? t("detail.resume") : t("detail.play")}
