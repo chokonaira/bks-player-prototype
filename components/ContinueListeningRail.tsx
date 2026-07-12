@@ -8,7 +8,7 @@ import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import { Play, Pause } from "lucide-react";
 
 export default function ContinueListeningRail() {
-  const { play, current, playing } = usePlayer();
+  const { play, toggle, current, playing } = usePlayer();
   const { t } = useLocale();
   const { enabled: savedOffline } = useOffline();
   const online = useOnlineStatus();
@@ -19,7 +19,7 @@ export default function ContinueListeningRail() {
       <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.continueListening")}</h2>
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
         {CONTINUE.map((a) => (
-          <button key={a.id} onClick={() => !locked && play(a)} aria-disabled={locked}
+          <button key={a.id} onClick={() => !locked && (current?.id === a.id ? toggle() : play(a))} aria-disabled={locked}
             className={`group flex w-64 shrink-0 items-center gap-3 rounded-xl border border-ink/10 bg-ink/[0.03] p-3 text-left shadow-lg shadow-black/5 transition hover:bg-ink/[0.06] ${locked ? "cursor-not-allowed opacity-40 grayscale" : ""}`}>
             <div className={`relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
               {current?.id === a.id && playing

@@ -11,7 +11,7 @@ import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import { useLocale } from "./LocaleProvider";
 
 export default function AudioCard({ audio }: { audio: Audio }) {
-  const { play, current, playing } = usePlayer();
+  const { play, toggle: togglePlay, current, playing } = usePlayer();
   const { isFav, toggle } = useFavorites();
   const { enabled: savedOffline } = useOffline();
   const online = useOnlineStatus();
@@ -25,7 +25,7 @@ export default function AudioCard({ audio }: { audio: Audio }) {
     <div className={`group w-40 shrink-0 md:w-48 transition ${locked ? "opacity-40 grayscale" : ""}`}>
       <div className="relative">
       <button
-        onClick={() => !locked && play(audio)}
+        onClick={() => !locked && (isCurrent ? togglePlay() : play(audio))}
         aria-disabled={locked}
         className={`relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br ${audio.cover} shadow-lg shadow-black/10
           outline-none focus-visible:ring-2 focus-visible:ring-coral ${locked ? "cursor-not-allowed" : ""}`}

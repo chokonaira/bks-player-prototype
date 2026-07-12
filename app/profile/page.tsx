@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Bell, CreditCard, Moon, Sun, Globe, Download, ChevronRight, LogOut } from "lucide-react";
 import { useTheme } from "@/lib/useTheme";
 import { useLocale } from "@/components/LocaleProvider";
@@ -18,7 +19,6 @@ const SLEEP_DEFAULTS = [10, 20, 30, 45];
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
   const [sleepIdx, setSleepIdx] = useState(2);
-  const [planOpen, setPlanOpen] = useState(false);
   const [signOutNote, setSignOutNote] = useState(false);
   const { light, toggleTheme } = useTheme();
   const { locale, setLocale, t } = useLocale();
@@ -48,29 +48,17 @@ export default function Profile() {
       </section>
 
       <section className="space-y-2">
-        <div className="rounded-2xl border border-ink/10 bg-ink/[0.03] transition">
-          <button onClick={() => setPlanOpen((o) => !o)}
-            className="flex w-full items-center gap-4 p-4 text-left">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
-              <CreditCard className="h-5 w-5" strokeWidth={1.8} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm text-ink">{t("profile.manageSub")}</span>
-              <span className="block truncate text-xs text-ink/50">{t("profile.renews")}</span>
-            </span>
-            <ChevronRight className={`h-4 w-4 shrink-0 text-ink/30 transition-transform ${planOpen ? "rotate-90" : ""}`} />
-          </button>
-          {planOpen && (
-            <div className="border-t border-ink/10 px-4 py-4 text-xs text-ink/50">
-              <div className="flex items-center justify-between">
-                <span>{t("profile.planLine")}</span>
-                <button className="rounded-full border border-ink/15 px-3 py-1 text-ink/70 transition hover:border-coral hover:text-coral">
-                  {t("profile.changePlan")}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        <Link href="/plans"
+          className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
+            <CreditCard className="h-5 w-5" strokeWidth={1.8} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm text-ink">{t("profile.manageSub")}</span>
+            <span className="block truncate text-xs text-ink/50">{t("profile.renews")}</span>
+          </span>
+          <ChevronRight className="h-4 w-4 shrink-0 text-ink/30" />
+        </Link>
 
         <button onClick={() => setNotifications((n) => !n)}
           className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">

@@ -90,6 +90,16 @@ const en: Dict = {
   "offline.savedCount": "audios saved",
   "offline.pageNote": "Plays without internet — even in airplane mode",
   "offline.empty": "Nothing saved yet — turn on Offline listening in your profile.",
+  "plans.title": "My Plan",
+  "plans.sub": "Your tier, billing, and renewal — all in one place",
+  "plans.active": "Active",
+  "plans.perMonth": "/ month",
+  "plans.cancel": "Cancel subscription",
+  "plans.cancelNote": "Prototype — nothing was cancelled ♥",
+  "plans.switch": "Switch to this tier",
+  "plans.switched": "Plan updated — takes effect next cycle",
+  "plans.payment": "Update payment details",
+  "plans.paymentNote": "Stripe checkout would open here",
 };
 
 const es: Dict = {
@@ -174,6 +184,16 @@ const es: Dict = {
   "offline.savedCount": "audios guardados",
   "offline.pageNote": "Se reproduce sin internet — incluso en modo avión",
   "offline.empty": "Aún no hay nada guardado — activa Escucha sin conexión en tu perfil.",
+  "plans.title": "Mi plan",
+  "plans.sub": "Tu nivel, pagos y renovación — todo en un lugar",
+  "plans.active": "Activo",
+  "plans.perMonth": "/ mes",
+  "plans.cancel": "Cancelar suscripción",
+  "plans.cancelNote": "Prototipo — no se canceló nada ♥",
+  "plans.switch": "Cambiar a este nivel",
+  "plans.switched": "Plan actualizado — desde el próximo ciclo",
+  "plans.payment": "Actualizar método de pago",
+  "plans.paymentNote": "Aquí se abriría el checkout de Stripe",
 };
 
 const fr: Dict = {
@@ -258,6 +278,16 @@ const fr: Dict = {
   "offline.savedCount": "audios enregistrés",
   "offline.pageNote": "Lecture sans internet — même en mode avion",
   "offline.empty": "Rien d'enregistré — activez l'Écoute hors ligne dans votre profil.",
+  "plans.title": "Mon abonnement",
+  "plans.sub": "Votre offre, paiement et renouvellement — au même endroit",
+  "plans.active": "Actif",
+  "plans.perMonth": "/ mois",
+  "plans.cancel": "Annuler l'abonnement",
+  "plans.cancelNote": "Prototype — rien n'a été annulé ♥",
+  "plans.switch": "Passer à cette offre",
+  "plans.switched": "Offre mise à jour — au prochain cycle",
+  "plans.payment": "Mettre à jour le paiement",
+  "plans.paymentNote": "Le checkout Stripe s'ouvrirait ici",
 };
 
 export const DICT: Record<Locale, Dict> = { en, es, fr };
