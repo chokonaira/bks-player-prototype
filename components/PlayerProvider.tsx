@@ -4,7 +4,7 @@ import {
   createContext, useContext, useRef, useState,
   useEffect, useCallback, ReactNode,
 } from "react";
-import type { Audio } from "@/lib/mockData";
+import { AUDIOS, type Audio } from "@/lib/mockData";
 
 type PlayerState = {
   current: Audio | null;
@@ -36,6 +36,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [speed, setSpeedState] = useState(1);
   const [sleepRemaining, setSleepRemaining] = useState<number | null>(null);
+  const currentRef = useRef<Audio | null>(null);
+  const speedRef = useRef(1);
 
   // one <audio> element for the whole app -> playback persists across routes
   useEffect(() => {
@@ -43,7 +45,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     audioRef.current = el;
     const onTime = () => setTime(el.currentTime);
     const onMeta = () => setDuration(el.duration || 0);
-    const onEnd = () => setPlaying(false);
+    // auto-advance: when a track ends, play the next one in catalog order
+    const onEnd = () => {
+      const cur = currentRef.current;
+      if (!cur) { setPlaying(false); return; }
+      const idx = AUDIOS.findIndex((a) => a.id === cur.id);
+      const next = AUDIOS[(idx + 1) % AUDIOS.length];
+      el.src = next.src;
+      el.playbackRate = speedRef.current;
+      el.currentTime = 0;
+      currentRef.current = next;
+      setCurrent(next);
+      el.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("loadedmetadata", onMeta);
     el.addEventListener("ended", onEnd);
@@ -68,6 +82,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       el.addEventListener("loadedmetadata", () => {
         if (resumeAt && el.duration) el.currentTime = resumeAt * el.duration;
       }, { once: true });
+      currentRef.current = a;
       setCurrent(a);
     }
     el.play().then(() => setPlaying(true)).catch(() => {});
@@ -91,6 +106,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   const setSpeed = useCallback((s: number) => {
     setSpeedState(s);
+    speedRef.current = s;
     if (audioRef.current) audioRef.current.playbackRate = s;
   }, []);
 

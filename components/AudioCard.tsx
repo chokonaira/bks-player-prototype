@@ -6,11 +6,13 @@ import { useFavorites } from "@/lib/useFavorites";
 import Link from "next/link";
 import { Play, Pause, Heart, ArrowDownToLine } from "lucide-react";
 import { useOffline } from "@/lib/useOffline";
+import { useLocale } from "./LocaleProvider";
 
 export default function AudioCard({ audio }: { audio: Audio }) {
   const { play, current, playing } = usePlayer();
   const { isFav, toggle } = useFavorites();
   const { enabled: savedOffline } = useOffline();
+  const { t } = useLocale();
   const isCurrent = current?.id === audio.id;
   const fav = isFav(audio.id);
   return (
@@ -37,7 +39,12 @@ export default function AudioCard({ audio }: { audio: Audio }) {
           {audio.tier}
         </span>
         {savedOffline && (
-          <span className="absolute bottom-2 right-2 grid h-5 w-5 place-items-center rounded-full bg-coral text-black shadow">
+          <span
+            role="img"
+            aria-label={t("offline.saved")}
+            title={t("offline.saved")}
+            className="absolute bottom-2 right-2 grid h-5 w-5 place-items-center rounded-full bg-coral text-black shadow"
+          >
             <ArrowDownToLine className="h-3 w-3" strokeWidth={2.2} />
           </span>
         )}

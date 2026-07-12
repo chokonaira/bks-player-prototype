@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "./LocaleProvider";
+import { useOffline } from "@/lib/useOffline";
+import { ArrowDownToLine } from "lucide-react";
 
 export default function HomeHeader() {
   const { t } = useLocale();
+  const { enabled: savedOffline, count } = useOffline();
   const [slot, setSlot] = useState<"evening" | "morning" | "afternoon" | "late">("evening");
 
   useEffect(() => {
@@ -29,6 +32,12 @@ export default function HomeHeader() {
       <p className="text-[10px] uppercase tracking-[0.25em] text-coral">Prototype</p>
       <h1 className="mt-1 font-serif text-4xl tracking-tight text-ink md:text-5xl">{title}</h1>
       <p className="mt-2 text-sm text-ink/50">{sub}</p>
+      {savedOffline && (
+        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-coral/10 px-3 py-1 text-xs text-coral">
+          <ArrowDownToLine className="h-3 w-3" strokeWidth={2} />
+          {t("offline.ready")} · {count} {t("offline.savedCount")}
+        </p>
+      )}
     </header>
   );
 }

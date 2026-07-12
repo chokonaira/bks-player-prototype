@@ -81,11 +81,13 @@ const en: Dict = {
   "profile.signOut": "Sign out",
   "profile.stayNote": "Prototype mode — you're staying ♥",
   "profile.offline": "Offline listening",
-  "profile.offlineOn": "Saved on this device — plays without internet",
+  "profile.offlineOn": "Saved for offline listening — plays without internet",
   "profile.offlineOff": "Save audios to listen without internet",
   "profile.saving": "Saving…",
   "offline.banner": "You're offline — your saved audios still play",
-  "offline.saved": "Saved",
+  "offline.saved": "Saved for offline",
+  "offline.ready": "Offline ready",
+  "offline.savedCount": "audios saved",
 };
 
 const es: Dict = {
@@ -161,11 +163,13 @@ const es: Dict = {
   "profile.signOut": "Cerrar sesión",
   "profile.stayNote": "Modo prototipo — te quedas ♥",
   "profile.offline": "Escucha sin conexión",
-  "profile.offlineOn": "Guardado en este dispositivo — se reproduce sin internet",
+  "profile.offlineOn": "Guardado para escuchar sin conexión — se reproduce sin internet",
   "profile.offlineOff": "Guarda los audios para escuchar sin internet",
   "profile.saving": "Guardando…",
   "offline.banner": "Sin conexión — tus audios guardados siguen sonando",
-  "offline.saved": "Guardado",
+  "offline.saved": "Guardado sin conexión",
+  "offline.ready": "Listo sin conexión",
+  "offline.savedCount": "audios guardados",
 };
 
 const fr: Dict = {
@@ -241,11 +245,13 @@ const fr: Dict = {
   "profile.signOut": "Se déconnecter",
   "profile.stayNote": "Mode prototype — vous restez ♥",
   "profile.offline": "Écoute hors ligne",
-  "profile.offlineOn": "Enregistré sur cet appareil — lecture sans internet",
+  "profile.offlineOn": "Enregistré pour l'écoute hors ligne — lecture sans internet",
   "profile.offlineOff": "Enregistrez les audios pour écouter sans internet",
   "profile.saving": "Enregistrement…",
   "offline.banner": "Hors ligne — vos audios enregistrés fonctionnent toujours",
-  "offline.saved": "Enregistré",
+  "offline.saved": "Enregistré hors ligne",
+  "offline.ready": "Prêt hors ligne",
+  "offline.savedCount": "audios enregistrés",
 };
 
 export const DICT: Record<Locale, Dict> = { en, es, fr };

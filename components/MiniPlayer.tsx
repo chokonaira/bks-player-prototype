@@ -159,7 +159,10 @@ export default function MiniPlayer() {
                     <span /><span /><span />
                   </div>
                 </div>
-                {AUDIOS.filter((a) => a.id !== p.current!.id).slice(0, 3).map((a) => (
+                {(() => {
+                  const idx = AUDIOS.findIndex((a) => a.id === p.current!.id);
+                  return [...AUDIOS.slice(idx + 1), ...AUDIOS.slice(0, idx)].slice(0, 3);
+                })().map((a) => (
                   <button key={a.id} onClick={() => p.play(a)}
                     className="group flex w-full items-center gap-3 p-3 text-left transition hover:bg-ink/[0.04]">
                     <div className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
