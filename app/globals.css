@@ -14,3 +14,60 @@ input:focus-visible {
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* ambient cover art — warm glow drift + ember sparks; runs only while playing */
+.ambient-blob {
+  position: absolute;
+  width: 75%;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+.ambient-blob-a {
+  left: -12%;
+  top: -10%;
+  background: radial-gradient(circle, rgba(232, 101, 79, 0.32), transparent 70%);
+  animation: ambient-drift-a 14s ease-in-out infinite;
+}
+.ambient-blob-b {
+  right: -14%;
+  bottom: -12%;
+  background: radial-gradient(circle, rgba(255, 176, 130, 0.22), transparent 70%);
+  animation: ambient-drift-b 18s ease-in-out infinite;
+}
+.ambient-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgba(255, 200, 170, 0.9);
+  box-shadow: 0 0 6px 1px rgba(232, 101, 79, 0.55);
+  opacity: 0;
+  animation: ambient-twinkle 7s ease-in-out infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+.ambient-playing .ambient-blob,
+.ambient-playing .ambient-spark {
+  animation-play-state: running;
+}
+@keyframes ambient-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(22%, 16%) scale(1.25); }
+}
+@keyframes ambient-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1.15); }
+  50% { transform: translate(-20%, -14%) scale(0.95); }
+}
+@keyframes ambient-twinkle {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  40% { opacity: 0.9; }
+  60% { opacity: 0.5; }
+  80% { opacity: 0; transform: translateY(-14px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob, .ambient-spark { animation: none; }
+}

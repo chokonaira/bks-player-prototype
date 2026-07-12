@@ -3,6 +3,7 @@
 import { usePlayer } from "./PlayerProvider";
 import { initials, type Audio } from "@/lib/mockData";
 import Link from "next/link";
+import { Play, Pause } from "lucide-react";
 
 export default function AudioCard({ audio }: { audio: Audio }) {
   const { play, current, playing } = usePlayer();
@@ -21,8 +22,10 @@ export default function AudioCard({ audio }: { audio: Audio }) {
         <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-left text-xs font-medium text-white/90">
           {audio.title}
         </span>
-        <span className="absolute inset-0 grid place-items-center text-3xl text-white opacity-0 transition group-hover:opacity-100">
-          {isCurrent && playing ? "❚❚" : "►"}
+        <span className="absolute inset-0 grid place-items-center text-white opacity-0 transition group-hover:opacity-100">
+          {isCurrent && playing
+            ? <Pause className="h-9 w-9 fill-current drop-shadow" />
+            : <Play className="h-9 w-9 translate-x-0.5 fill-current drop-shadow" />}
         </span>
         <span className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] text-white/80">
           {audio.tier}
