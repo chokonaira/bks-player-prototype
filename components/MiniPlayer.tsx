@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePlayer } from "./PlayerProvider";
+import { initials } from "@/lib/mockData";
 
 const fmt = (s: number) => {
   if (!s || isNaN(s)) return "0:00";
@@ -49,8 +50,12 @@ export default function MiniPlayer() {
       {expanded && (
         <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#0d0d0d] px-6 pb-10 pt-6">
           <button onClick={() => setExpanded(false)} className="self-start text-white/60">▼ Close</button>
-          <div className={`mx-auto mt-6 aspect-square w-full max-w-sm rounded-2xl bg-gradient-to-br ${p.current.cover}`} />
-          <div className="mx-auto mt-8 w-full max-w-sm">
+          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[240px] rounded-2xl bg-gradient-to-br ${p.current.cover}`}>
+            <span className="absolute inset-0 grid place-items-center font-serif text-6xl text-white/15">
+              {initials(p.current.title)}
+            </span>
+          </div>
+          <div className="mx-auto mt-6 w-full max-w-sm">
             <h2 className="text-2xl font-semibold text-white">{p.current.title}</h2>
             <p className="mt-1 text-white/50">{p.current.voiceActor}</p>
 
@@ -71,7 +76,7 @@ export default function MiniPlayer() {
               <button onClick={() => p.skip(30)} className="text-white/80">+30s</button>
             </div>
 
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-6 flex items-center justify-between">
               {/* speed */}
               <div className="flex items-center gap-2">
                 <span className="text-xs text-white/40">Speed</span>
@@ -85,7 +90,7 @@ export default function MiniPlayer() {
             </div>
 
             {/* sleep timer */}
-            <div className="mt-6">
+            <div className="mt-4">
               <button onClick={() => setSleepOpen((o) => !o)} className="text-sm text-white/70">
                 🌙 Sleep timer {p.sleepRemaining !== null ? `· ${fmt(p.sleepRemaining)}` : ""}
               </button>

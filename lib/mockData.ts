@@ -20,7 +20,7 @@ export const AUDIOS: Audio[] = [
     duration: 5568,
     category: "Friends to Lovers",
     tier: "Secret",
-    cover: "from-stone-700 to-stone-900",
+    cover: "from-[#3a2420] to-[#0d0d0d]",
     src: "/audio/sample-1.mp3",
     progress: 0.32,
   },
@@ -32,7 +32,7 @@ export const AUDIOS: Audio[] = [
     duration: 2700,
     category: "Comfy Boyfriend",
     tier: "Angel",
-    cover: "from-neutral-600 to-neutral-900",
+    cover: "from-[#2b2b33] to-[#0d0d0d]",
     src: "/audio/sample-2.mp3",
     progress: 0.66,
   },
@@ -44,7 +44,7 @@ export const AUDIOS: Audio[] = [
     duration: 4080,
     category: "Against the Rules",
     tier: "Secret",
-    cover: "from-zinc-700 to-zinc-900",
+    cover: "from-[#402a2e] to-[#141018]",
     src: "/audio/sample-1.mp3",
   },
   {
@@ -55,7 +55,7 @@ export const AUDIOS: Audio[] = [
     duration: 2460,
     category: "Strangers to Lovers",
     tier: "Angel",
-    cover: "from-stone-600 to-neutral-900",
+    cover: "from-[#33251c] to-[#0f0d0d]",
     src: "/audio/sample-2.mp3",
   },
   {
@@ -66,9 +66,12 @@ export const AUDIOS: Audio[] = [
     duration: 3720,
     category: "In Charge",
     tier: "Secret",
-    cover: "from-neutral-700 to-stone-900",
+    cover: "from-[#4a2b22] to-[#100c0c]",
     src: "/audio/sample-1.mp3",
   },
 ];
 
 export const CONTINUE = AUDIOS.filter((a) => a.progress);
+
+export const initials = (title: string) =>
+  title.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
