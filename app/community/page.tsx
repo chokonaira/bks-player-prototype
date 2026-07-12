@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, Lightbulb, Headphones, Heart } from "lucide-react";
+import { MessageCircle, Lightbulb, Headphones, Heart, Check } from "lucide-react";
 import { useLocalAdditions } from "@/lib/useLocalAdditions";
 import { useLocale } from "@/components/LocaleProvider";
 
@@ -78,8 +78,12 @@ export default function Community() {
                 onClick={() => setVoted(o.id)}
                 disabled={voted !== null}
                 className={`relative w-full overflow-hidden rounded-xl border p-3 text-left text-sm transition ${
-                  voted === o.id ? "border-coral/60 text-ink" : "border-ink/10 text-ink/70 hover:border-ink/25"
-                } ${voted !== null && voted !== o.id ? "opacity-60" : ""}`}
+                  voted === o.id
+                    ? "border-coral bg-coral/10 text-ink"
+                    : voted !== null
+                    ? "border-transparent text-ink/45"
+                    : "border-ink/10 text-ink/70 hover:border-ink/25"
+                }`}
               >
                 {voted !== null && (
                   <span
@@ -88,8 +92,15 @@ export default function Community() {
                   />
                 )}
                 <span className="relative flex items-center justify-between gap-2">
-                  <span>{o.label}</span>
-                  {voted !== null && <span className="text-xs text-ink/50">{pct}%</span>}
+                  <span className="flex min-w-0 items-center gap-2">
+                    {voted === o.id && (
+                      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-coral">
+                        <Check className="h-3 w-3 text-black" strokeWidth={3} />
+                      </span>
+                    )}
+                    <span>{o.label}</span>
+                  </span>
+                  {voted !== null && <span className="shrink-0 text-xs text-ink/50">{pct}%</span>}
                 </span>
               </button>
             );
