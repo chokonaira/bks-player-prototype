@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, CreditCard, Moon, Sun, ChevronRight, LogOut } from "lucide-react";
+import { Bell, CreditCard, Moon, Sun, Globe, ChevronRight, LogOut } from "lucide-react";
 import { useTheme } from "@/lib/useTheme";
+import { useLocale } from "@/components/LocaleProvider";
+import { LOCALES } from "@/lib/i18n";
 
 const STATS = [
-  { label: "Hours listened", value: "42" },
-  { label: "Audios finished", value: "31" },
-  { label: "Night streak", value: "12" },
+  { key: "profile.hours", value: "42" },
+  { key: "profile.finished", value: "31" },
+  { key: "profile.streak", value: "12" },
 ];
 
 const SLEEP_DEFAULTS = [10, 20, 30, 45];
@@ -18,6 +20,7 @@ export default function Profile() {
   const [planOpen, setPlanOpen] = useState(false);
   const [signOutNote, setSignOutNote] = useState(false);
   const { light, toggleTheme } = useTheme();
+  const { locale, setLocale, t } = useLocale();
 
   return (
     <>
@@ -35,9 +38,9 @@ export default function Profile() {
 
       <section className="mb-8 grid grid-cols-3 gap-3">
         {STATS.map((s) => (
-          <div key={s.label} className="rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center">
+          <div key={s.key} className="rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center">
             <p className="font-serif text-2xl text-ink md:text-3xl">{s.value}</p>
-            <p className="mt-1 text-[11px] text-ink/50">{s.label}</p>
+            <p className="mt-1 text-[11px] text-ink/50">{t(s.key)}</p>
           </div>
         ))}
       </section>
@@ -50,17 +53,17 @@ export default function Profile() {
               <CreditCard className="h-5 w-5" strokeWidth={1.8} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm text-ink">Manage subscription</span>
-              <span className="block truncate text-xs text-ink/50">Secret Tier · renews monthly</span>
+              <span className="block text-sm text-ink">{t("profile.manageSub")}</span>
+              <span className="block truncate text-xs text-ink/50">{t("profile.renews")}</span>
             </span>
             <ChevronRight className={`h-4 w-4 shrink-0 text-ink/30 transition-transform ${planOpen ? "rotate-90" : ""}`} />
           </button>
           {planOpen && (
             <div className="border-t border-ink/10 px-4 py-4 text-xs text-ink/50">
               <div className="flex items-center justify-between">
-                <span>Secret Tier · $10.99/month · renews Aug 12, 2026</span>
+                <span>{t("profile.planLine")}</span>
                 <button className="rounded-full border border-ink/15 px-3 py-1 text-ink/70 transition hover:border-coral hover:text-coral">
-                  Change plan
+                  {t("profile.changePlan")}
                 </button>
               </div>
             </div>
@@ -73,9 +76,9 @@ export default function Profile() {
             <Bell className="h-5 w-5" strokeWidth={1.8} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm text-ink">Notifications</span>
+            <span className="block text-sm text-ink">{t("profile.notifications")}</span>
             <span className="block truncate text-xs text-ink/50">
-              {notifications ? "New releases & listen-alongs" : "Muted"}
+              {notifications ? t("profile.notifNote") : t("profile.muted")}
             </span>
           </span>
           <span className={`relative h-6 w-11 shrink-0 rounded-full transition ${notifications ? "bg-coral" : "bg-ink/15"}`}>
@@ -89,16 +92,39 @@ export default function Profile() {
             {light ? <Sun className="h-5 w-5" strokeWidth={1.8} /> : <Moon className="h-5 w-5" strokeWidth={1.8} />}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm text-ink">Appearance</span>
+            <span className="block text-sm text-ink">{t("profile.appearance")}</span>
             <span className="block truncate text-xs text-ink/50">
-              {light ? "Cream — daylight listening" : "Dark — easy on late nights"}
+              {light ? t("profile.lightNote") : t("profile.darkNote")}
             </span>
           </span>
           <span className="flex shrink-0 overflow-hidden rounded-full border border-ink/15 text-xs">
-            <span className={`px-3 py-1 transition ${!light ? "bg-coral text-black" : "text-ink/50"}`}>Dark</span>
-            <span className={`px-3 py-1 transition ${light ? "bg-coral text-black" : "text-ink/50"}`}>Light</span>
+            <span className={`px-3 py-1 transition ${!light ? "bg-coral text-black" : "text-ink/50"}`}>{t("profile.dark")}</span>
+            <span className={`px-3 py-1 transition ${light ? "bg-coral text-black" : "text-ink/50"}`}>{t("profile.light")}</span>
           </span>
         </button>
+
+        <div className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
+            <Globe className="h-5 w-5" strokeWidth={1.8} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm text-ink">{t("profile.language")}</span>
+            <span className="block truncate text-xs text-ink/50">
+              {LOCALES.find((l) => l.code === locale)?.name}
+            </span>
+          </span>
+          <span className="flex shrink-0 overflow-hidden rounded-full border border-ink/15 text-xs">
+            {LOCALES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setLocale(l.code)}
+                className={`px-3 py-1 transition ${locale === l.code ? "bg-coral text-black" : "text-ink/50 hover:text-ink"}`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </span>
+        </div>
 
         <button onClick={() => setSleepIdx((i) => (i + 1) % SLEEP_DEFAULTS.length)}
           className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">
@@ -106,11 +132,11 @@ export default function Profile() {
             <Moon className="h-5 w-5" strokeWidth={1.8} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm text-ink">Default sleep timer</span>
-            <span className="block truncate text-xs text-ink/50">Tap to change</span>
+            <span className="block text-sm text-ink">{t("profile.sleepDefault")}</span>
+            <span className="block truncate text-xs text-ink/50">{t("profile.tapToChange")}</span>
           </span>
           <span className="shrink-0 rounded-full bg-coral/15 px-3 py-1 text-xs text-coral">
-            {SLEEP_DEFAULTS[sleepIdx]} min · fade
+            {SLEEP_DEFAULTS[sleepIdx]} {t("profile.fade")}
           </span>
         </button>
 
@@ -119,7 +145,7 @@ export default function Profile() {
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5">
             <LogOut className="h-5 w-5" strokeWidth={1.8} />
           </span>
-          <span className="text-sm">{signOutNote ? "Prototype mode — you're staying ♥" : "Sign out"}</span>
+          <span className="text-sm">{signOutNote ? t("profile.stayNote") : t("profile.signOut")}</span>
         </button>
       </section>
     </>

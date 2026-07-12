@@ -2,13 +2,15 @@
 
 import { usePlayer } from "./PlayerProvider";
 import { CONTINUE } from "@/lib/mockData";
+import { useLocale } from "./LocaleProvider";
 
 export default function ContinueListeningRail() {
   const { play } = usePlayer();
+  const { t } = useLocale();
   if (!CONTINUE.length) return null;
   return (
     <section className="mb-8">
-      <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">Continue Listening</h2>
+      <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.continueListening")}</h2>
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
         {CONTINUE.map((a) => (
           <button key={a.id} onClick={() => play(a)}

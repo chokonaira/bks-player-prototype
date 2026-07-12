@@ -5,6 +5,7 @@ import "./globals.css";
 const serif = Playfair_Display({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-serif" });
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 import { PlayerProvider } from "@/components/PlayerProvider";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import MiniPlayer from "@/components/MiniPlayer";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
@@ -44,12 +45,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{if(localStorage.getItem('bks-theme')==='light')document.documentElement.classList.add('light')}catch(e){}`,
           }}
         />
-        <PlayerProvider>
-          <TopNav />
-          <main className="mx-auto max-w-5xl px-4 pb-40 pt-6 md:pt-8">{children}</main>
-          <MiniPlayer />
-          <BottomNav />
-        </PlayerProvider>
+        <LocaleProvider>
+          <PlayerProvider>
+            <TopNav />
+            <main className="mx-auto max-w-5xl px-4 pb-40 pt-6 md:pt-8">{children}</main>
+            <MiniPlayer />
+            <BottomNav />
+          </PlayerProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

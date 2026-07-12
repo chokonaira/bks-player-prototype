@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessageCircle, Lightbulb, Headphones, Heart } from "lucide-react";
 import { useLocalAdditions } from "@/lib/useLocalAdditions";
+import { useLocale } from "@/components/LocaleProvider";
 
 const POLL = [
   { id: "a", label: "Bodyguard who finally confesses", votes: 214 },
@@ -18,6 +19,7 @@ const SEED_IDEAS: Idea[] = [
 ];
 
 export default function Community() {
+  const { t } = useLocale();
   const [voted, setVoted] = useState<string | null>(null);
   const { items: ideas, add: addIdea } = useLocalAdditions<Idea>("bks-ideas", SEED_IDEAS);
   const [likedIdeas, setLikedIdeas] = useState<Record<string, boolean>>({});
@@ -40,8 +42,8 @@ export default function Community() {
   return (
     <>
       <header className="mb-6">
-        <h1 className="font-serif text-3xl text-ink md:text-4xl">Community</h1>
-        <p className="mt-1 text-sm text-ink/50">Listen together, vote, and shape what we record next</p>
+        <h1 className="font-serif text-3xl text-ink md:text-4xl">{t("nav.community")}</h1>
+        <p className="mt-1 text-sm text-ink/50">{t("community.sub")}</p>
       </header>
 
       <section className="mb-6 rounded-2xl border border-ink/10 bg-ink/[0.03] p-5">
@@ -50,8 +52,8 @@ export default function Community() {
             <Headphones className="h-5 w-5" strokeWidth={1.8} />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Listen-along Friday</h2>
-            <p className="text-xs text-ink/50">This week: a brand-new Comfy Boyfriend release · 8pm EST</p>
+            <h2 className="font-medium text-ink">{t("community.listenAlong")}</h2>
+            <p className="text-xs text-ink/50">{t("community.listenAlongNote")}</p>
           </div>
         </div>
       </section>
@@ -62,8 +64,8 @@ export default function Community() {
             <MessageCircle className="h-5 w-5" strokeWidth={1.8} />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Vote: what should we record next?</h2>
-            <p className="text-xs text-ink/50">{total} votes this week</p>
+            <h2 className="font-medium text-ink">{t("community.voteTitle")}</h2>
+            <p className="text-xs text-ink/50">{total} {t("community.votes")}</p>
           </div>
         </div>
         <div className="space-y-2">
@@ -93,7 +95,7 @@ export default function Community() {
             );
           })}
         </div>
-        {voted !== null && <p className="mt-3 text-xs text-coral">Thanks — your vote is in ♥</p>}
+        {voted !== null && <p className="mt-3 text-xs text-coral">{t("community.voteThanks")}</p>}
       </section>
 
       <section className="rounded-2xl border border-ink/10 bg-ink/[0.03] p-5">
@@ -102,15 +104,15 @@ export default function Community() {
             <Lightbulb className="h-5 w-5" strokeWidth={1.8} />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Submit a story idea</h2>
-            <p className="text-xs text-ink/50">The best ideas become audios — priority for Secret Tier</p>
+            <h2 className="font-medium text-ink">{t("community.ideaTitle")}</h2>
+            <p className="text-xs text-ink/50">{t("community.ideaNote")}</p>
           </div>
         </div>
         <textarea
           rows={3}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="A rainy cabin weekend, an old flame, and nowhere to be…"
+          placeholder={t("community.ideaPlaceholder")}
           className="mt-4 w-full resize-none rounded-xl border border-ink/10 bg-ink/[0.04] p-3 text-sm text-ink placeholder:text-ink/30 focus:border-coral/50 focus:outline-none"
         />
         <div className="mt-3 flex items-center gap-3">
@@ -119,13 +121,13 @@ export default function Community() {
             disabled={!draft.trim()}
             className="rounded-full bg-coral px-5 py-2 text-sm font-medium text-black transition hover:opacity-90 disabled:opacity-40"
           >
-            Send idea
+            {t("community.sendIdea")}
           </button>
-          {sent && <span className="text-xs text-coral">Idea sent ♥</span>}
+          {sent && <span className="text-xs text-coral">{t("community.ideaSent")}</span>}
         </div>
 
         <div className="mt-6 border-t border-ink/10 pt-4">
-          <h3 className="mb-3 text-sm font-medium text-ink/70">Recent ideas</h3>
+          <h3 className="mb-3 text-sm font-medium text-ink/70">{t("community.recentIdeas")}</h3>
           <ul className="space-y-2">
             {ideas.map((idea, i) => {
               const liked = !!likedIdeas[idea.text];

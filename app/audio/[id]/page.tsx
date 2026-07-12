@@ -6,11 +6,13 @@ import { AUDIOS, initials, type Comment } from "@/lib/mockData";
 import { usePlayer } from "@/components/PlayerProvider";
 import { useFavorites } from "@/lib/useFavorites";
 import { useLocalAdditions } from "@/lib/useLocalAdditions";
+import { useLocale } from "@/components/LocaleProvider";
 import { Play, Pause, Heart, Bookmark, Clock } from "lucide-react";
 
 export default function AudioDetail({ params }: { params: { id: string } }) {
   const audio = AUDIOS.find((a) => a.id === params.id);
   const { play, toggle, current, playing } = usePlayer();
+  const { t } = useLocale();
   const { isFav, toggle: toggleFav } = useFavorites();
   const [liked, setLiked] = useState(false);
   const { items: comments, add: addComment } = useLocalAdditions<Comment>(
@@ -48,12 +50,12 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
       </div>
 
       <h1 className="mt-6 font-serif text-3xl text-ink md:text-4xl">{audio.title}</h1>
-      <p className="mt-2 text-sm text-ink/60">{audio.voiceActor} · Written by {audio.writer}</p>
+      <p className="mt-2 text-sm text-ink/60">{audio.voiceActor} · {t("detail.writtenBy")} {audio.writer}</p>
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
         <span className="rounded-full bg-coral/15 px-3 py-1 text-coral">{audio.category}</span>
         <span className="flex items-center gap-1 rounded-full bg-ink/5 px-3 py-1 text-ink/60">
-          <Clock className="h-3 w-3" strokeWidth={1.8} /> {Math.round(audio.duration / 60)} min
+          <Clock className="h-3 w-3" strokeWidth={1.8} /> {Math.round(audio.duration / 60)} {t("player.min")}
         </span>
       </div>
 
@@ -64,7 +66,7 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
           className="flex items-center gap-2 rounded-full bg-coral px-6 py-2.5 text-sm font-medium text-black transition hover:opacity-90"
         >
           {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
-          {isPlaying ? "Pause" : isCurrent ? "Resume" : "Play"}
+          {isPlaying ? t("detail.pause") : isCurrent ? t("detail.resume") : t("detail.play")}
         </button>
         <button
           onClick={() => setLiked((l) => !l)}
@@ -93,13 +95,13 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
       {/* comments */}
       <section className="mt-8 border-t border-ink/10 pt-6">
         <h2 className="mb-4 font-serif text-xl text-ink md:text-2xl">
-          Comments <span className="text-ink/40">({comments.length})</span>
+          {t("detail.comments")} <span className="text-ink/40">({comments.length})</span>
         </h2>
         <textarea
           rows={2}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Share your thoughts on this audio…"
+          placeholder={t("detail.commentPlaceholder")}
           className="w-full resize-none rounded-xl border border-ink/10 bg-ink/[0.04] p-3 text-sm text-ink placeholder:text-ink/30 focus:border-coral/50 focus:outline-none"
         />
         <div className="mt-2 flex justify-end">
@@ -108,7 +110,7 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
             disabled={!draft.trim()}
             className="rounded-full bg-coral px-5 py-2 text-sm font-medium text-black transition hover:opacity-90 disabled:opacity-40"
           >
-            Post comment
+            {t("detail.postComment")}
           </button>
         </div>
         <ul className="mt-5 space-y-4">

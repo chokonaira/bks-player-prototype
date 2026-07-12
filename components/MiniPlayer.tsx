@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw } from "lucide-react";
+import { useLocale } from "./LocaleProvider";
 
 const fmt = (s: number) => {
   if (!s || isNaN(s)) return "0:00";
@@ -16,6 +17,7 @@ const SLEEP_OPTS = [10, 20, 30, 45];
 
 export default function MiniPlayer() {
   const p = usePlayer();
+  const { t } = useLocale();
   const [expanded, setExpanded] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
   if (!p.current) return null;
@@ -57,7 +59,7 @@ export default function MiniPlayer() {
       {expanded && (
         <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-base px-6 pb-10 pt-6">
           <button onClick={() => setExpanded(false)} className="flex items-center gap-1 self-start text-sm text-ink/60">
-            <ChevronDown className="h-4 w-4" /> Close
+            <ChevronDown className="h-4 w-4" /> {t("player.close")}
           </button>
           <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[240px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""}`}>
             <span aria-hidden className="cover-texture" />
@@ -102,7 +104,7 @@ export default function MiniPlayer() {
             <div className="mt-6 flex items-center justify-between">
               {/* speed */}
               <div className="flex items-center gap-2">
-                <span className="text-xs text-ink/40">Speed</span>
+                <span className="text-xs text-ink/40">{t("player.speed")}</span>
                 {SPEEDS.map((s) => (
                   <button key={s} onClick={() => p.setSpeed(s)}
                     className={`rounded px-2 py-1 text-xs ${p.speed === s ? "bg-coral text-black" : "text-ink/60"}`}>
@@ -116,7 +118,7 @@ export default function MiniPlayer() {
             <div className="mt-4">
               <button onClick={() => setSleepOpen((o) => !o)} className="flex items-center gap-2 text-sm text-ink/70">
                 <Moon className="h-4 w-4" strokeWidth={1.8} />
-                Sleep timer {p.sleepRemaining !== null ? `· ${fmt(p.sleepRemaining)}` : ""}
+                {t("player.sleepTimer")} {p.sleepRemaining !== null ? `· ${fmt(p.sleepRemaining)}` : ""}
               </button>
               {sleepOpen && (
                 <div className="mt-2 flex gap-2">
@@ -127,7 +129,7 @@ export default function MiniPlayer() {
                     </button>
                   ))}
                   <button onClick={() => { p.setSleep(null); setSleepOpen(false); }}
-                    className="rounded px-3 py-1 text-xs text-coral">Off</button>
+                    className="rounded px-3 py-1 text-xs text-coral">{t("player.off")}</button>
                 </div>
               )}
             </div>
@@ -137,14 +139,14 @@ export default function MiniPlayer() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-coral/15 px-3 py-1 text-xs text-coral">{p.current.category}</span>
                 <span className="rounded-full bg-ink/5 px-3 py-1 text-xs text-ink/60">{p.current.tier} Tier</span>
-                <span className="rounded-full bg-ink/5 px-3 py-1 text-xs text-ink/60">{Math.round(p.current.duration / 60)} min</span>
+                <span className="rounded-full bg-ink/5 px-3 py-1 text-xs text-ink/60">{Math.round(p.current.duration / 60)} {t("player.min")}</span>
               </div>
               <p className="mt-3 text-xs text-ink/40">Written by {p.current.writer}</p>
             </div>
 
             {/* up next */}
             <div className="mt-6">
-              <h3 className="mb-3 text-sm font-medium text-ink/70">Up Next</h3>
+              <h3 className="mb-3 text-sm font-medium text-ink/70">{t("player.upNext")}</h3>
               <div className="space-y-2">
                 {AUDIOS.filter((a) => a.id !== p.current!.id).slice(0, 3).map((a) => (
                   <button key={a.id} onClick={() => p.play(a)}
@@ -156,7 +158,7 @@ export default function MiniPlayer() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-serif text-sm text-ink">{a.title}</p>
-                      <p className="truncate text-xs text-ink/50">{a.voiceActor} · {Math.round(a.duration / 60)} min</p>
+                      <p className="truncate text-xs text-ink/50">{a.voiceActor} · {Math.round(a.duration / 60)} {t("player.min")}</p>
                     </div>
                     <Play className="h-4 w-4 shrink-0 text-ink/40" />
                   </button>

@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "./LocaleProvider";
 
 const LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Browse", href: "/browse" },
-  { label: "Community", href: "/community" },
-  { label: "Favorites", href: "/favorites" },
-  { label: "Profile", href: "/profile" },
+  { key: "nav.home", href: "/" },
+  { key: "nav.browse", href: "/browse" },
+  { key: "nav.community", href: "/community" },
+  { key: "nav.favorites", href: "/favorites" },
+  { key: "nav.profile", href: "/profile" },
 ];
 
 export default function TopNav() {
   const path = usePathname();
+  const { t } = useLocale();
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink/10 bg-base/90 backdrop-blur md:block">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
@@ -24,7 +26,7 @@ export default function TopNav() {
           {LINKS.map((l) => (
             <Link key={l.href} href={l.href}
               className={`text-sm transition ${path === l.href ? "text-coral" : "text-ink/60 hover:text-ink"}`}>
-              {l.label}
+              {t(l.key)}
             </Link>
           ))}
         </nav>

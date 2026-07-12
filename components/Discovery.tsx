@@ -4,6 +4,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Search, X } from "lucide-react";
 import AudioCard from "./AudioCard";
 import { AUDIOS } from "@/lib/mockData";
+import { useLocale } from "./LocaleProvider";
 
 const CATEGORIES = Array.from(new Set(AUDIOS.map((a) => a.category)));
 
@@ -12,6 +13,7 @@ const moodCover = (c: string) =>
   AUDIOS.find((a) => a.category === c)?.cover ?? "from-stone-700 to-stone-900";
 
 export default function Discovery({ children }: { children: ReactNode }) {
+  const { t } = useLocale();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const active = query.trim() !== "" || category !== null;
@@ -42,7 +44,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search your perfect audio"
+            placeholder={t("search.placeholder")}
             className="w-full bg-transparent text-sm text-ink placeholder:text-ink/35 focus:outline-none"
           />
           {query && (
@@ -61,7 +63,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
                 : "border-ink/15 text-ink/60 hover:border-ink/30 hover:text-ink"
             }`}
           >
-            All moods
+            {t("search.allMoods")}
           </button>
           {CATEGORIES.map((c) => (
             <button
@@ -86,10 +88,10 @@ export default function Discovery({ children }: { children: ReactNode }) {
         <section>
           <div className="mb-3 flex items-baseline justify-between">
             <h2 className="font-serif text-2xl text-ink">
-              {category ?? "Results"}
+              {category ?? t("search.results")}
             </h2>
             <span className="text-xs text-ink/40">
-              {results.length} {results.length === 1 ? "audio" : "audios"}
+              {results.length} {results.length === 1 ? t("search.audio") : t("search.audios")}
             </span>
           </div>
           {results.length ? (
@@ -98,7 +100,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
             </div>
           ) : (
             <p className="text-sm text-ink/50">
-              Nothing matches — try another mood or clear the search.
+              {t("search.empty")}
             </p>
           )}
         </section>
@@ -107,7 +109,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
           {children}
 
           <section className="mt-10">
-            <h2 className="mb-4 text-center font-serif text-2xl text-ink md:text-3xl">Browse by Mood</h2>
+            <h2 className="mb-4 text-center font-serif text-2xl text-ink md:text-3xl">{t("browse.byMood")}</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
               {CATEGORIES.map((c) => (
                 <button
