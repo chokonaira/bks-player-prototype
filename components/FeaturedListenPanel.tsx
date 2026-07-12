@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AudioLines, Pause, Play, Volume2 } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
 import { usePlayer } from "@/components/PlayerProvider";
@@ -10,7 +10,7 @@ const FEATURED_AUDIOS = [AUDIOS[1], AUDIOS[0], AUDIOS[2]].filter((audio): audio 
 
 export default function FeaturedListenPanel() {
   const { t } = useLocale();
-  const { current, completed, playing, play, toggle } = usePlayer();
+  const { current, playing, play, toggle } = usePlayer();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const featuredAudio = FEATURED_AUDIOS[selectedIdx] ?? AUDIOS[0];
   const sideAudios = useMemo(
@@ -31,17 +31,6 @@ export default function FeaturedListenPanel() {
     const nextIdx = FEATURED_AUDIOS.findIndex((audio) => audio.id === audioId);
     if (nextIdx !== -1) setSelectedIdx(nextIdx);
   };
-
-  useEffect(() => {
-    if (!completed) return;
-    const completedIdx = FEATURED_AUDIOS.findIndex((audio) => audio.id === completed.id);
-    if (completedIdx === -1) return;
-    const nextIdx = (completedIdx + 1) % FEATURED_AUDIOS.length;
-    const nextAudio = FEATURED_AUDIOS[nextIdx];
-    if (!nextAudio) return;
-    setSelectedIdx(nextIdx);
-    play(nextAudio);
-  }, [completed, play]);
 
   return (
     <section className="relative my-10 overflow-hidden py-4 md:my-12 md:py-8">

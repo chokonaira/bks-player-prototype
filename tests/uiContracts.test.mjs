@@ -47,13 +47,14 @@ test("browse mood tiles use a clean mobile mosaic", () => {
 test("home includes a functional featured listen panel", () => {
   const home = read("app/page.tsx");
   const featured = read("components/FeaturedListenPanel.tsx");
+  const player = read("components/PlayerProvider.tsx");
   assert.match(home, /<FeaturedListenPanel \/>/);
   assert.match(featured, /usePlayer\(\)/);
   assert.match(featured, /play\(featuredAudio\)/);
-  assert.match(featured, /completedIdx/);
-  assert.match(featured, /play\(nextAudio\)/);
   assert.match(featured, /selectAudio\(audio\.id\)/);
   assert.match(featured, /home\.listenFree/);
+  assert.match(player, /AUDIOS\[\(idx \+ 1\) % AUDIOS\.length\]/);
+  assert.match(player, /el\.play\(\)\.then\(\(\) => setPlaying\(true\)\)/);
 });
 
 test("community page presents a live hub with voting and ideas", () => {
@@ -117,7 +118,10 @@ test("afterglow, sleep ritual, and moments copy exists for every locale", () => 
 });
 
 test("moment hearts are saved from the player and surfaced in favorites", () => {
-  assert.match(read("lib/useMoments.ts"), /bks-moments/);
+  const moments = read("lib/useMoments.ts");
+  assert.match(moments, /bks-moments/);
+  assert.match(moments, /DEFAULT_MOMENT/);
+  assert.match(moments, /demo-moment-539-94/);
   assert.match(read("components/MiniPlayer.tsx"), /addMoment\(p\.current!\.id, p\.time\)/);
   assert.match(read("app/favorites/page.tsx"), /moments\.slice\(0, 2\)/);
   assert.match(read("app/favorites/page.tsx"), /moments\.viewAll/);

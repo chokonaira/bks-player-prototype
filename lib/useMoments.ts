@@ -11,14 +11,21 @@ export type Moment = {
 
 const KEY = "bks-moments";
 
+const DEFAULT_MOMENT: Moment = {
+  id: "demo-moment-539-94",
+  audioId: "539",
+  time: 94,
+  createdAt: 0,
+};
+
 const read = (): Moment[] => {
   try {
     const value = localStorage.getItem(KEY);
-    if (!value) return [];
+    if (!value) return [DEFAULT_MOMENT];
     const parsed = JSON.parse(value);
     return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return [];
+    return [DEFAULT_MOMENT];
   }
 };
 

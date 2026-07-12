@@ -67,11 +67,24 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     const onEnd = () => {
       const cur = currentRef.current;
       if (!cur) { setPlaying(false); return; }
-      setPlaying(false);
       setTime(el.duration || el.currentTime || 0);
       setSleepRemaining(null);
       clearProgress(cur.id);
       setCompleted(cur);
+      const idx = AUDIOS.findIndex((item) => item.id === cur.id);
+      const next = AUDIOS[(idx + 1) % AUDIOS.length] ?? AUDIOS[0];
+      if (!next) {
+        setPlaying(false);
+        return;
+      }
+      currentRef.current = next;
+      setCurrent(next);
+      setTime(0);
+      setDuration(0);
+      lastProgressSaveRef.current = 0;
+      el.src = next.src;
+      el.playbackRate = speedRef.current;
+      el.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("loadedmetadata", onMeta);
