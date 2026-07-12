@@ -3,7 +3,7 @@
 import ContinueListeningRail from "@/components/ContinueListeningRail";
 import HomeHeader from "@/components/HomeHeader";
 import { useLocale } from "@/components/LocaleProvider";
-import AudioCard from "@/components/AudioCard";
+import AudioShelf from "@/components/AudioShelf";
 import Discovery from "@/components/Discovery";
 import { AUDIOS } from "@/lib/mockData";
 
@@ -14,21 +14,11 @@ export default function Home() {
       <HomeHeader />
 
       <Discovery>
-      <ContinueListeningRail />
+        <ContinueListeningRail />
 
-      <section className="mb-8">
-        <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.forYou")}</h2>
-        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible">
-          {AUDIOS.map((a) => <AudioCard key={a.id} audio={a} layout="rail" />)}
-        </div>
-      </section>
+        <AudioShelf title={t("home.forYou")} audios={AUDIOS} />
 
-      <section>
-        <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.newReleases")}</h2>
-        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible">
-          {[...AUDIOS].reverse().map((a) => <AudioCard key={a.id} audio={a} layout="rail" />)}
-        </div>
-      </section>
+        <AudioShelf title={t("home.newReleases")} audios={[...AUDIOS].reverse()} />
       </Discovery>
     </>
   );

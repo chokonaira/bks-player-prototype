@@ -12,19 +12,25 @@ test("mobile navigation remains mobile-only and desktop navigation remains deskt
 
 test("desktop library views use wider shell and lg grids", () => {
   assert.match(read("app/layout.tsx"), /max-w-6xl/);
-  assert.match(read("app/page.tsx"), /lg:grid-cols-5/);
+  assert.match(read("components/AudioShelf.tsx"), /lg:grid-cols-5/);
   assert.match(read("app/browse/page.tsx"), /lg:grid-cols-5/);
   assert.match(read("app/favorites/page.tsx"), /lg:grid-cols-5/);
   assert.match(read("app/downloads/page.tsx"), /lg:grid-cols-5/);
   assert.match(read("components/Discovery.tsx"), /lg:flex-wrap/);
 });
 
-test("grid cards fill mobile columns while home shelves keep rail sizing", () => {
+test("grid cards fill mobile columns while home shelves expand per segment", () => {
   const audioCard = read("components/AudioCard.tsx");
+  const audioShelf = read("components/AudioShelf.tsx");
   assert.match(audioCard, /layout = "grid"/);
   assert.match(audioCard, /layout\?: "grid" \| "rail"/);
   assert.match(audioCard, /layout === "rail" \? "w-40 shrink-0 md:w-48 lg:w-full" : "w-full"/);
-  assert.equal(count(read("app/page.tsx"), 'layout="rail"'), 2);
+  assert.match(audioShelf, /initialMobileCount = 2/);
+  assert.match(audioShelf, /audios\.slice\(0, initialDesktopCount\)/);
+  assert.match(audioShelf, /grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5/);
+  assert.match(audioShelf, /md:hidden/);
+  assert.match(audioShelf, /common\.viewAll/);
+  assert.equal(count(read("app/page.tsx"), "<AudioShelf"), 2);
 });
 
 test("desktop mini-player is floating and sticky artwork has animated handoff classes", () => {
@@ -49,9 +55,16 @@ test("afterglow, sleep ritual, and moments copy exists for every locale", () => 
     '"afterglow.keepListening"',
     '"player.sleepActive"',
     '"player.cancel"',
+    '"common.viewAll"',
+    '"common.hide"',
+    '"fav.audios"',
+    '"fav.viewAll"',
+    '"fav.hide"',
     '"moments.title"',
     '"moments.save"',
     '"moments.saved"',
+    '"moments.viewAll"',
+    '"moments.hide"',
   ]) {
     assert.equal(count(i18n, key), 3, `${key} should be translated in en/es/fr`);
   }
@@ -60,7 +73,16 @@ test("afterglow, sleep ritual, and moments copy exists for every locale", () => 
 test("moment hearts are saved from the player and surfaced in favorites", () => {
   assert.match(read("lib/useMoments.ts"), /bks-moments/);
   assert.match(read("components/MiniPlayer.tsx"), /addMoment\(p\.current!\.id, p\.time\)/);
-  assert.match(read("app/favorites/page.tsx"), /moments\.slice\(0, 6\)/);
+  assert.match(read("app/favorites/page.tsx"), /moments\.slice\(0, 2\)/);
+  assert.match(read("app/favorites/page.tsx"), /moments\.viewAll/);
+});
+
+test("favorites caps saved audios and expands into a scrollable grid", () => {
+  const favoritesPage = read("app/favorites/page.tsx");
+  assert.match(favoritesPage, /favorites\.slice\(0, 4\)/);
+  assert.match(favoritesPage, /visibleFavorites\.map/);
+  assert.match(favoritesPage, /max-h-\[min\(72vh,760px\)\] overflow-y-auto/);
+  assert.match(favoritesPage, /fav\.viewAll/);
 });
 
 test("continue listening is backed by persisted playback progress", () => {
