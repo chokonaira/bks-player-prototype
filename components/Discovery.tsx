@@ -6,11 +6,28 @@ import AudioCard from "./AudioCard";
 import { AUDIOS } from "@/lib/mockData";
 import { useLocale } from "./LocaleProvider";
 
-const CATEGORIES = Array.from(new Set(AUDIOS.map((a) => a.category)));
+const CATEGORY_ORDER = ["In Charge", "Friends to Lovers", "Strangers to Lovers", "Comfy Boyfriend", "Against the Rules"];
+const CATEGORIES = Array.from(new Set(AUDIOS.map((a) => a.category))).sort((a, b) => {
+  const ai = CATEGORY_ORDER.indexOf(a);
+  const bi = CATEGORY_ORDER.indexOf(b);
+  return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+});
 
-// each mood tile borrows the cover gradient of its first audio
+const MOOD_BACKDROPS: Record<string, string> = {
+  "In Charge": "from-[#18100f] via-[#583429] to-[#c48266]",
+  "Friends to Lovers": "from-[#f5dccb] via-[#b77b65] to-[#2d1a18]",
+  "Strangers to Lovers": "from-[#f4f1eb] via-[#6f6a68] to-[#111111]",
+  "Comfy Boyfriend": "from-[#30323d] via-[#202229] to-[#090a0d]",
+  "Against the Rules": "from-[#4b2731] via-[#2d1723] to-[#09070a]",
+};
+
 const moodCover = (c: string) =>
-  AUDIOS.find((a) => a.category === c)?.cover ?? "from-stone-700 to-stone-900";
+  MOOD_BACKDROPS[c] ?? AUDIOS.find((a) => a.category === c)?.cover ?? "from-stone-700 to-stone-900";
+
+const moodTileLayout = (index: number) =>
+  index === 2
+    ? "col-span-2 aspect-[2.08/1] md:col-span-1 md:aspect-[4/3]"
+    : "aspect-[1.02/1] md:aspect-[4/3]";
 
 export default function Discovery({ children }: { children: ReactNode }) {
   const { t } = useLocale();
@@ -110,17 +127,18 @@ export default function Discovery({ children }: { children: ReactNode }) {
 
           <section className="mt-10">
             <h2 className="mb-4 text-center font-serif text-2xl text-ink md:text-3xl">{t("browse.byMood")}</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-              {CATEGORIES.map((c) => (
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 md:gap-4 lg:grid-cols-5">
+              {CATEGORIES.map((c, index) => (
                 <button
                   key={c}
                   onClick={() => pickMood(c)}
-                  className={`group relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br ${moodCover(c)} shadow-lg shadow-black/10 transition hover:scale-[1.02]`}
+                  className={`group relative overflow-hidden rounded-lg bg-gradient-to-br ${moodCover(c)} ${moodTileLayout(index)} shadow-lg shadow-black/10 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/15`}
                 >
                   <span aria-hidden className="cover-texture" />
-                  <span className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0" />
+                  <span aria-hidden className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_38%,rgba(0,0,0,0.42))] transition group-hover:opacity-80" />
+                  <span aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
                   <span className="absolute inset-0 grid place-items-center px-3">
-                    <span className="rounded-full bg-black/45 px-4 py-1.5 font-serif text-sm italic text-white backdrop-blur-sm">
+                    <span className="max-w-[92%] rounded-full bg-black/45 px-3 py-1 text-center text-xs font-semibold text-white shadow-sm backdrop-blur-sm md:px-4 md:py-1.5 md:text-sm">
                       {c}
                     </span>
                   </span>

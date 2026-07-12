@@ -33,6 +33,35 @@ test("grid cards fill mobile columns while home shelves expand per segment", () 
   assert.equal(count(read("app/page.tsx"), "<AudioShelf"), 2);
 });
 
+test("browse mood tiles use a clean mobile mosaic", () => {
+  const discovery = read("components/Discovery.tsx");
+  assert.match(discovery, /CATEGORY_ORDER/);
+  assert.match(discovery, /MOOD_BACKDROPS/);
+  assert.match(discovery, /moodTileLayout/);
+  assert.match(discovery, /col-span-2 aspect-\[2\.08\/1\]/);
+  assert.match(discovery, /grid grid-cols-2 gap-2\.5 md:grid-cols-3/);
+  assert.match(discovery, /rounded-lg bg-gradient-to-br/);
+});
+
+test("home includes a functional featured listen panel", () => {
+  const home = read("app/page.tsx");
+  const featured = read("components/FeaturedListenPanel.tsx");
+  assert.match(home, /<FeaturedListenPanel \/>/);
+  assert.match(featured, /usePlayer\(\)/);
+  assert.match(featured, /play\(featuredAudio\)/);
+  assert.match(featured, /home\.listenFree/);
+});
+
+test("community page presents a live hub with voting and ideas", () => {
+  const community = read("app/community/page.tsx");
+  assert.match(community, /community\.liveRoom/);
+  assert.match(community, /community\.members/);
+  assert.match(community, /community\.feedNote/);
+  assert.match(community, /setVoted\(o\.id\)/);
+  assert.match(community, /addIdea\(\{ text, author: "You"/);
+  assert.match(community, /lg:grid-cols-\[minmax\(0,1fr\)_380px\]/);
+});
+
 test("desktop mini-player is floating and sticky artwork has animated handoff classes", () => {
   const mini = read("components/MiniPlayer.tsx");
   const css = read("app/globals.css");
@@ -55,8 +84,15 @@ test("afterglow, sleep ritual, and moments copy exists for every locale", () => 
     '"afterglow.keepListening"',
     '"player.sleepActive"',
     '"player.cancel"',
+    '"home.featuredTitle"',
+    '"home.listenFree"',
     '"common.viewAll"',
     '"common.hide"',
+    '"community.liveRoom"',
+    '"community.members"',
+    '"community.votesShort"',
+    '"community.ideasShort"',
+    '"community.feedNote"',
     '"fav.audios"',
     '"fav.viewAll"',
     '"fav.hide"',

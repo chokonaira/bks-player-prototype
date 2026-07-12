@@ -1,6 +1,7 @@
 "use client";
 
 import ContinueListeningRail from "@/components/ContinueListeningRail";
+import FeaturedListenPanel from "@/components/FeaturedListenPanel";
 import HomeHeader from "@/components/HomeHeader";
 import { useLocale } from "@/components/LocaleProvider";
 import AudioShelf from "@/components/AudioShelf";
@@ -19,6 +20,8 @@ export default function Home() {
         <AudioShelf title={t("home.forYou")} audios={AUDIOS} />
 
         <AudioShelf title={t("home.newReleases")} audios={[...AUDIOS].reverse()} />
+
+        <FeaturedListenPanel />
       </Discovery>
     </>
   );
