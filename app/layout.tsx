@@ -36,16 +36,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d0d0d",
+  themeColor: "#f1eee6",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="en" className={`${serif.variable} ${sans.variable} light`}>
       <body className="min-h-screen bg-base text-ink antialiased">
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('bks-theme')==='light')document.documentElement.classList.add('light')}catch(e){}`,
+            __html: `try{document.documentElement.classList.toggle('light',localStorage.getItem('bks-theme')!=='dark')}catch(e){}`,
           }}
         />
         <ServiceWorkerRegister />

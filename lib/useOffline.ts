@@ -3,8 +3,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { AUDIOS } from "@/lib/mockData";
 
-const AUDIO_CACHE = "bks-audio-v1";
+// explicit saves live here; the service worker's playback cache is separate,
+// so merely playing a track never counts as saving it
+const AUDIO_CACHE = "bks-audio-saved-v1";
+const LEGACY_AUDIO_CACHE = "bks-audio-v1";
+const FLAG = "bks-offline-on";
 const AUDIO_URLS = Array.from(new Set(AUDIOS.map((a) => a.src)));
+let clearImplicitCachesPromise: Promise<void> | null = null;
+
+function clearImplicitOfflineCaches() {
+  clearImplicitCachesPromise ??= Promise.all([
+    caches.delete(LEGACY_AUDIO_CACHE),
+    caches.open(AUDIO_CACHE).then((cache) => Promise.all(AUDIO_URLS.map((u) => cache.delete(u)))),
+  ]).then(() => undefined).catch(() => undefined);
+  return clearImplicitCachesPromise;
+}
 
 export function useOffline() {
   const [supported, setSupported] = useState(false);
@@ -12,13 +25,13 @@ export function useOffline() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const check = async () => {
+    const check = () => {
       try {
         if (!("caches" in window)) return;
         setSupported(true);
-        const cache = await caches.open(AUDIO_CACHE);
-        const hits = await Promise.all(AUDIO_URLS.map((u) => cache.match(u)));
-        setEnabled(hits.every(Boolean));
+        const saved = localStorage.getItem(FLAG) === "1";
+        setEnabled(saved);
+        if (!saved) void clearImplicitOfflineCaches();
       } catch {}
     };
     check();
@@ -32,10 +45,15 @@ export function useOffline() {
     try {
       const cache = await caches.open(AUDIO_CACHE);
       if (enabled) {
-        await Promise.all(AUDIO_URLS.map((u) => cache.delete(u)));
+        await Promise.all([
+          ...AUDIO_URLS.map((u) => cache.delete(u)),
+          caches.delete(LEGACY_AUDIO_CACHE),
+        ]);
+        localStorage.setItem(FLAG, "0");
         setEnabled(false);
       } else {
         await cache.addAll(AUDIO_URLS);
+        localStorage.setItem(FLAG, "1");
         setEnabled(true);
       }
     } catch {}

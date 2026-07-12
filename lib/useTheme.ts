@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 const KEY = "bks-theme";
 
 export function useTheme() {
-  const [light, setLight] = useState(false);
+  const [light, setLight] = useState(true);
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));

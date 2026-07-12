@@ -1,7 +1,7 @@
 "use client";
 
 import { usePlayer } from "./PlayerProvider";
-import { CONTINUE } from "@/lib/mockData";
+import { CONTINUE, initials } from "@/lib/mockData";
 import { useLocale } from "./LocaleProvider";
 import { useOffline } from "@/lib/useOffline";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
@@ -22,9 +22,13 @@ export default function ContinueListeningRail() {
           <button key={a.id} onClick={() => !locked && (current?.id === a.id ? toggle() : play(a))} aria-disabled={locked}
             className={`group flex w-64 shrink-0 items-center gap-3 rounded-xl border border-ink/10 bg-ink/[0.03] p-3 text-left shadow-lg shadow-black/5 transition hover:bg-ink/[0.06] ${locked ? "cursor-not-allowed opacity-40 grayscale" : ""}`}>
             <div className={`relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
+              <span aria-hidden className="cover-texture" />
+              <span className="absolute inset-0 grid place-items-center font-serif text-2xl italic text-white/10">
+                {initials(a.title)}
+              </span>
               {current?.id === a.id && playing
-                ? <Pause className="h-5 w-5 fill-current text-white opacity-0 transition group-hover:opacity-100" />
-                : <Play className="h-5 w-5 translate-x-px fill-current text-white opacity-0 transition group-hover:opacity-100" />}
+                ? <Pause className="relative z-10 h-5 w-5 fill-current text-white/90 drop-shadow" />
+                : <Play className="relative z-10 h-5 w-5 translate-x-px fill-current text-white/90 drop-shadow" />}
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate font-serif text-[15px] text-ink">{a.title}</p>

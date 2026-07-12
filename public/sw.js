@@ -1,4 +1,6 @@
-const AUDIO_CACHE = "bks-audio-v1";
+const AUDIO_CACHE = "bks-audio-saved-v1"; // explicit saves via the offline toggle
+const AUDIO_RUNTIME = "bks-audio-runtime-v1"; // playback caching, never counts as saved
+const LEGACY_AUDIO_CACHE = "bks-audio-v1";
 const STATIC_CACHE = "bks-static-v1";
 const PAGE_CACHE = "bks-pages-v1";
 
@@ -7,21 +9,29 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(self.clients.claim());
+  e.waitUntil(Promise.all([
+    caches.delete(LEGACY_AUDIO_CACHE),
+    self.clients.claim(),
+  ]));
 });
 
-// serve audio from cache with Range support so seeking works offline
+// serve audio from cache with Range support so seeking works offline;
+// explicit saves win, then the runtime playback cache, then the network
 async function audioResponse(request) {
-  const cache = await caches.open(AUDIO_CACHE);
-  let cached = await cache.match(request.url);
+  const saved = await caches.open(AUDIO_CACHE);
+  let cached = await saved.match(request.url);
   if (!cached) {
-    // fetch the FULL file (no range header) so the cached copy is complete
-    const full = await fetch(request.url);
-    if (full.ok && full.status === 200) {
-      await cache.put(request.url, full.clone());
-      cached = full;
-    } else {
-      return full;
+    const runtime = await caches.open(AUDIO_RUNTIME);
+    cached = await runtime.match(request.url);
+    if (!cached) {
+      // fetch the FULL file (no range header) so the cached copy is complete
+      const full = await fetch(request.url);
+      if (full.ok && full.status === 200) {
+        await runtime.put(request.url, full.clone());
+        cached = full;
+      } else {
+        return full;
+      }
     }
   }
   const range = request.headers.get("range");
