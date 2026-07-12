@@ -60,7 +60,7 @@ export default function MiniPlayer() {
           <button onClick={() => setExpanded(false)} className="flex items-center gap-1 self-start text-sm text-ink/60">
             <ChevronDown className="h-4 w-4" /> {t("player.close")}
           </button>
-          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[240px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""}`}>
+          <div className={`relative mx-auto mt-4 aspect-square w-full max-w-[300px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""}`}>
             <span aria-hidden className="cover-texture" />
             <div className="ambient-blob ambient-blob-a" />
             <div className="ambient-blob ambient-blob-b" />
@@ -141,23 +141,39 @@ export default function MiniPlayer() {
               <p className="mt-3 text-xs text-ink/40">Written by {p.current.writer}</p>
             </div>
 
-            {/* up next */}
+            {/* queue */}
             <div className="mt-6">
               <h3 className="mb-3 text-sm font-medium text-ink/70">{t("player.upNext")}</h3>
-              <div className="space-y-2">
+              <div className="divide-y divide-ink/10 overflow-hidden rounded-2xl border border-ink/10 bg-ink/[0.02]">
+                <div className="flex items-center gap-3 bg-coral/5 p-3">
+                  <div className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${p.current.cover}`}>
+                    <span className="absolute inset-0 grid place-items-center font-serif text-sm italic text-white/25">
+                      {initials(p.current.title)}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] uppercase tracking-wide text-coral">{t("player.nowPlaying")}</p>
+                    <p className="truncate font-serif text-[15px] text-ink">{p.current.title}</p>
+                  </div>
+                  <div className={`eq shrink-0 ${p.playing ? "" : "paused"}`} aria-hidden>
+                    <span /><span /><span />
+                  </div>
+                </div>
                 {AUDIOS.filter((a) => a.id !== p.current!.id).slice(0, 3).map((a) => (
                   <button key={a.id} onClick={() => p.play(a)}
-                    className="flex w-full items-center gap-3 rounded-xl border border-ink/5 bg-ink/[0.03] p-2.5 text-left hover:bg-ink/[0.06]">
-                    <div className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
-                      <span className="absolute inset-0 grid place-items-center font-serif text-sm text-white/25">
+                    className="group flex w-full items-center gap-3 p-3 text-left transition hover:bg-ink/[0.04]">
+                    <div className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
+                      <span className="absolute inset-0 grid place-items-center font-serif text-sm italic text-white/25">
                         {initials(a.title)}
                       </span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-serif text-sm text-ink">{a.title}</p>
+                      <p className="truncate font-serif text-[15px] text-ink">{a.title}</p>
                       <p className="truncate text-xs text-ink/50">{a.voiceActor} · {Math.round(a.duration / 60)} {t("player.min")}</p>
                     </div>
-                    <Play className="h-4 w-4 shrink-0 text-ink/40" />
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-ink/15 text-ink/50 transition group-hover:border-coral group-hover:bg-coral group-hover:text-black">
+                      <Play className="h-3.5 w-3.5 translate-x-px fill-current" />
+                    </span>
                   </button>
                 ))}
               </div>
