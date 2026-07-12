@@ -7,6 +7,16 @@ import {
 import { AUDIOS, type Audio } from "@/lib/mockData";
 import { clearProgress, getSavedProgress, saveProgress } from "@/lib/playbackProgress";
 
+type WakeLockSentinelLike = EventTarget & {
+  release: () => Promise<void>;
+};
+
+type WakeLockNavigator = Navigator & {
+  wakeLock?: {
+    request: (type: "screen") => Promise<WakeLockSentinelLike>;
+  };
+};
+
 type PlayerState = {
   current: Audio | null;
   completed: Audio | null;
@@ -45,6 +55,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const currentRef = useRef<Audio | null>(null);
   const speedRef = useRef(1);
   const lastProgressSaveRef = useRef(0);
+  const wakeLockRef = useRef<WakeLockSentinelLike | null>(null);
+  const sleepModeActive = sleepRemaining !== null;
 
   // one <audio> element for the whole app -> playback persists across routes
   useEffect(() => {
@@ -201,6 +213,53 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     const t = setTimeout(() => setSleepRemaining((s) => (s === null ? null : s - 1)), 1000);
     return () => clearTimeout(t);
   }, [sleepRemaining]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const onWakeLockRelease = () => {
+      wakeLockRef.current = null;
+    };
+
+    const releaseWakeLock = async () => {
+      const lock = wakeLockRef.current;
+      wakeLockRef.current = null;
+      if (!lock) return;
+      lock.removeEventListener("release", onWakeLockRelease);
+      await lock.release().catch(() => {});
+    };
+
+    const requestWakeLock = async () => {
+      if (wakeLockRef.current || document.visibilityState !== "visible") return;
+      const wakeLock = (navigator as WakeLockNavigator).wakeLock;
+      if (!wakeLock?.request) return;
+      try {
+        const lock = await wakeLock.request("screen");
+        if (cancelled || !playing || !sleepModeActive) {
+          await lock.release().catch(() => {});
+          return;
+        }
+        lock.addEventListener("release", onWakeLockRelease);
+        wakeLockRef.current = lock;
+      } catch {}
+    };
+
+    const syncWakeLock = () => {
+      if (playing && sleepModeActive && document.visibilityState === "visible") {
+        void requestWakeLock();
+      } else {
+        void releaseWakeLock();
+      }
+    };
+
+    syncWakeLock();
+    document.addEventListener("visibilitychange", syncWakeLock);
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", syncWakeLock);
+      void releaseWakeLock();
+    };
+  }, [playing, sleepModeActive]);
 
   return (
     <Ctx.Provider value={{

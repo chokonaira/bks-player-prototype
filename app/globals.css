@@ -67,6 +67,20 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
+.mini-player-handoff {
+  animation: mini-player-handoff 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes mini-player-handoff {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ambient cover art — warm glow drift + ember sparks; runs only while playing */
 .player-art-shell {
   transition:
@@ -139,6 +153,134 @@ input:focus-visible {
     radial-gradient(120% 55% at 50% 0%, rgb(232 101 79 / 0.08), transparent 58%),
     rgb(var(--bg) / 1);
 }
+.sleep-wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 52% at 50% -10%, rgb(232 101 79 / 0.18), transparent 62%),
+    radial-gradient(64% 46% at 82% 18%, rgb(255 196 156 / 0.11), transparent 68%),
+    linear-gradient(180deg, rgb(26 21 17 / 0.09), rgb(26 21 17 / 0.02) 48%, rgb(232 101 79 / 0.08)),
+    rgb(var(--bg) / 1);
+  animation: sleep-wallpaper-fade 520ms ease-out both;
+}
+html:not(.light) .sleep-wallpaper {
+  background:
+    radial-gradient(90% 52% at 50% -10%, rgb(232 101 79 / 0.22), transparent 62%),
+    radial-gradient(64% 46% at 82% 18%, rgb(255 196 156 / 0.10), transparent 68%),
+    linear-gradient(180deg, rgb(232 101 79 / 0.12), rgb(255 255 255 / 0.02) 46%, rgb(0 0 0 / 0.25)),
+    rgb(var(--bg) / 1);
+}
+.sleep-wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  background:
+    linear-gradient(115deg, transparent 8%, rgb(255 230 210 / 0.09) 28%, transparent 45%),
+    linear-gradient(64deg, transparent 18%, rgb(232 101 79 / 0.08) 42%, transparent 62%);
+  filter: blur(24px);
+  opacity: 0.75;
+  transform: rotate(-7deg);
+  animation: sleep-aurora-drift 18s ease-in-out infinite alternate;
+}
+.sleep-wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(118deg, rgb(255 255 255 / 0.028) 0 1px, transparent 1px 28px),
+    radial-gradient(circle at 50% 44%, transparent 0 22%, rgb(26 21 17 / 0.08) 62%, rgb(26 21 17 / 0.18) 100%);
+  opacity: 0.68;
+}
+.sleep-aura {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(34px);
+  mix-blend-mode: screen;
+}
+.sleep-aura-one {
+  left: -16%;
+  top: 18%;
+  width: 62%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgb(232 101 79 / 0.22), transparent 68%);
+  animation: sleep-aura-float-one 24s ease-in-out infinite;
+}
+.sleep-aura-two {
+  right: -20%;
+  bottom: 10%;
+  width: 70%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgb(255 178 138 / 0.16), transparent 70%);
+  animation: sleep-aura-float-two 28s ease-in-out infinite;
+}
+.sleep-moon {
+  position: absolute;
+  right: 14%;
+  top: 16%;
+  width: 4.2rem;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 62% 36%, rgb(255 248 238 / 0.55), rgb(255 226 204 / 0.18) 38%, transparent 62%);
+  box-shadow: 0 0 36px rgb(255 214 188 / 0.18);
+  opacity: 0.8;
+  animation: sleep-moon-pulse 8s ease-in-out infinite;
+}
+.sleep-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgb(255 226 204 / 0.9);
+  box-shadow: 0 0 10px rgb(232 101 79 / 0.45);
+  animation: sleep-star-glow 6s ease-in-out infinite;
+}
+.sleep-star-one { left: 24%; top: 24%; }
+.sleep-star-two { left: 68%; top: 38%; animation-delay: 1.8s; }
+.sleep-star-three { left: 42%; top: 70%; animation-delay: 3.4s; }
+@keyframes sleep-wallpaper-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sleep-aurora-drift {
+  from { transform: translate3d(-3%, -1%, 0) rotate(-8deg) scale(1); }
+  to { transform: translate3d(3%, 2%, 0) rotate(-3deg) scale(1.04); }
+}
+@keyframes sleep-aura-float-one {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(18%, 7%, 0) scale(1.15); }
+}
+@keyframes sleep-aura-float-two {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.08); }
+  50% { transform: translate3d(-16%, -9%, 0) scale(0.96); }
+}
+@keyframes sleep-moon-pulse {
+  0%, 100% { opacity: 0.62; transform: scale(1); }
+  50% { opacity: 0.86; transform: scale(1.04); }
+}
+@keyframes sleep-star-glow {
+  0%, 100% { opacity: 0.24; transform: translateY(0) scale(0.8); }
+  45% { opacity: 0.9; transform: translateY(-8px) scale(1); }
+  70% { opacity: 0.38; }
+}
+.sleep-dim-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: rgb(26 21 17 / 0.16);
+  animation: sleep-dim-in 520ms ease-out both;
+}
+html:not(.light) .sleep-dim-overlay {
+  background: rgb(0 0 0 / 0.22);
+}
+@keyframes sleep-dim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .sleep-ritual-art::after {
   content: "";
   position: absolute;
@@ -171,6 +313,7 @@ input:focus-visible {
 }
 @media (prefers-reduced-motion: reduce) {
   .ambient-blob, .ambient-spark { animation: none; }
+  .sleep-wallpaper, .sleep-wallpaper::before, .sleep-aura, .sleep-moon, .sleep-star, .sleep-dim-overlay { animation: none; }
   .sleep-ritual-art .ambient-blob,
   .sleep-ritual-art .ambient-spark { animation: none; }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type UIEvent } from "react";
+import { useEffect, useRef, useState, type UIEvent } from "react";
 import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw, Heart } from "lucide-react";
@@ -31,6 +31,15 @@ export default function MiniPlayer() {
   const [artCompact, setArtCompact] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
   const [momentSaved, setMomentSaved] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (!expanded) return;
     const bodyOverflow = document.body.style.overflow;
@@ -48,15 +57,27 @@ export default function MiniPlayer() {
 
   if (!p.current) return null;
   const sleepActive = p.sleepRemaining !== null;
+  const showCollapsed = !expanded || closing;
 
   const openExpanded = () => {
+    if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+    setClosing(false);
     setArtCompact(false);
     setExpanded(true);
   };
 
   const closeExpanded = () => {
-    setExpanded(false);
-    setArtCompact(false);
+    if (closing) return;
+    setSleepOpen(false);
+    setArtCompact(true);
+    setClosing(true);
+    closeTimerRef.current = window.setTimeout(() => {
+      setExpanded(false);
+      setArtCompact(false);
+      setClosing(false);
+      closeTimerRef.current = null;
+    }, 280);
   };
 
   const handleExpandedScroll = (event: UIEvent<HTMLDivElement>) => {
@@ -80,8 +101,10 @@ export default function MiniPlayer() {
   return (
     <>
       {/* COLLAPSED BAR */}
-      {!expanded && (
-        <div className="fixed inset-x-0 bottom-14 z-40 border-t border-ink/10 bg-surface/95 backdrop-blur md:bottom-6 md:left-auto md:right-6 md:w-[440px] md:overflow-hidden md:rounded-2xl md:border md:shadow-2xl md:shadow-black/15">
+      {showCollapsed && (
+        <div className={`fixed inset-x-0 bottom-14 border-t border-ink/10 bg-surface/95 backdrop-blur md:bottom-6 md:left-auto md:right-6 md:w-[440px] md:overflow-hidden md:rounded-2xl md:border md:shadow-2xl md:shadow-black/15 ${
+          closing ? "mini-player-handoff z-[60]" : "z-40"
+        }`}>
           <div className="-mb-1 px-1">
             <SeekBar compact value={p.time} max={p.duration} onSeek={p.seek} />
           </div>
@@ -114,9 +137,22 @@ export default function MiniPlayer() {
       {expanded && (
         <div
           onScroll={handleExpandedScroll}
-          className={`no-scrollbar fixed inset-0 z-50 overflow-y-auto overscroll-y-contain bg-base pb-10 transition-colors duration-500 lg:px-8 ${sleepActive ? "sleep-ritual" : ""}`}
+          className={`no-scrollbar fixed inset-0 z-50 overflow-y-auto overscroll-y-contain bg-base pb-10 transition-[background-color,opacity,transform] duration-300 ease-out lg:px-8 ${sleepActive ? "sleep-ritual" : ""} ${
+            closing ? "pointer-events-none translate-y-3 scale-[0.985] opacity-0" : "translate-y-0 scale-100 opacity-100"
+          }`}
         >
-          <div className="lg:grid lg:min-h-screen lg:grid-cols-[minmax(360px,480px)_minmax(440px,560px)] lg:items-start lg:justify-center lg:gap-16 lg:py-12">
+          {sleepActive && (
+            <div className="sleep-wallpaper" aria-hidden>
+              <span className="sleep-aura sleep-aura-one" />
+              <span className="sleep-aura sleep-aura-two" />
+              <span className="sleep-moon" />
+              <span className="sleep-star sleep-star-one" />
+              <span className="sleep-star sleep-star-two" />
+              <span className="sleep-star sleep-star-three" />
+            </div>
+          )}
+          {sleepActive && <div className="sleep-dim-overlay" aria-hidden />}
+          <div className="relative z-10 lg:grid lg:min-h-screen lg:grid-cols-[minmax(360px,480px)_minmax(440px,560px)] lg:items-start lg:justify-center lg:gap-16 lg:py-12">
           <div
             className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-[padding,box-shadow,background-color] duration-500 ease-out lg:top-12 lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-0 ${
               artCompact ? "pb-3 shadow-lg shadow-black/5" : "pb-2"

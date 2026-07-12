@@ -9,6 +9,9 @@ test("mobile navigation remains mobile-only and desktop navigation remains deskt
   assert.match(read("components/BottomNav.tsx"), /md:hidden/);
   assert.match(read("components/TopNav.tsx"), /hidden[\s\S]*md:block/);
   assert.match(read("components/TopNav.tsx"), /rounded-full bg-coral\/10/);
+  assert.match(read("components/BottomNav.tsx"), /LAST_ACTIVE_TAB_KEY/);
+  assert.match(read("components/TopNav.tsx"), /LAST_ACTIVE_TAB_KEY/);
+  assert.match(read("lib/navTabs.ts"), /path\?\.startsWith\("\/downloads"\)/);
 });
 
 test("desktop library views use wider shell and lg grids", () => {
@@ -92,6 +95,19 @@ test("desktop mini-player is floating and sticky artwork has animated handoff cl
   assert.match(mini, /matchMedia\("\(min-width: 1024px\)"\)/);
   assert.match(mini, /document\.body\.style\.overflow = "hidden"/);
   assert.match(mini, /overscroll-y-contain/);
+  assert.match(mini, /setClosing\(true\)/);
+  assert.match(mini, /mini-player-handoff/);
+  assert.match(css, /@keyframes mini-player-handoff/);
+  assert.match(mini, /sleep-wallpaper/);
+  assert.match(mini, /sleep-dim-overlay/);
+  assert.match(mini, /sleep-aura/);
+  assert.match(mini, /sleep-moon/);
+  assert.match(css, /\.sleep-wallpaper/);
+  assert.match(css, /\.sleep-dim-overlay/);
+  assert.match(css, /@keyframes sleep-aurora-drift/);
+  assert.match(css, /@keyframes sleep-star-glow/);
+  assert.match(read("components/PlayerProvider.tsx"), /wakeLock\.request\("screen"\)/);
+  assert.match(read("components/PlayerProvider.tsx"), /playing && sleepModeActive && document\.visibilityState === "visible"/);
   assert.match(mini, /lg:text-5xl/);
   assert.match(mini, /player-art-shell/);
   assert.match(css, /\.player-art-shell/);
@@ -155,4 +171,17 @@ test("continue listening is backed by persisted playback progress", () => {
   assert.match(read("components/PlayerProvider.tsx"), /saveProgress\(cur\.id, el\.currentTime, el\.duration\)/);
   assert.match(read("components/PlayerProvider.tsx"), /clearProgress\(cur\.id\)/);
   assert.match(read("components/ContinueListeningRail.tsx"), /getContinueAudios\(AUDIOS\)/);
+});
+
+test("offline mode is explicit and never inferred from playback cache", () => {
+  const offline = read("lib/useOffline.ts");
+  const sw = read("public/sw.js");
+  assert.match(offline, /bks-offline-explicit-v2/);
+  assert.match(offline, /readOfflinePreference/);
+  assert.match(offline, /localStorage\.getItem\(FLAG\) === "1"/);
+  assert.match(offline, /LEGACY_FLAGS = \["bks-offline-on"\]/);
+  assert.doesNotMatch(offline, /cache\.match[\s\S]*setEnabled\(true\)/);
+  assert.match(sw, /AUDIO_RUNTIME = "bks-audio-runtime-v1"/);
+  assert.match(sw, /await runtime\.put\(request\.url, full\.clone\(\)\)/);
+  assert.doesNotMatch(sw, /await saved\.put/);
 });

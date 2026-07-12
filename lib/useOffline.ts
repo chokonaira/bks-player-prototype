@@ -7,16 +7,23 @@ import { AUDIOS } from "@/lib/mockData";
 // so merely playing a track never counts as saving it
 const AUDIO_CACHE = "bks-audio-saved-v1";
 const LEGACY_AUDIO_CACHE = "bks-audio-v1";
-const FLAG = "bks-offline-on";
+const FLAG = "bks-offline-explicit-v2";
+const LEGACY_FLAGS = ["bks-offline-on"];
 const AUDIO_URLS = Array.from(new Set(AUDIOS.map((a) => a.src)));
-let clearImplicitCachesPromise: Promise<void> | null = null;
 
-function clearImplicitOfflineCaches() {
-  clearImplicitCachesPromise ??= Promise.all([
+function readOfflinePreference() {
+  return localStorage.getItem(FLAG) === "1";
+}
+
+function clearLegacyPreferenceFlags() {
+  LEGACY_FLAGS.forEach((key) => localStorage.removeItem(key));
+}
+
+function clearOfflineAudioCaches() {
+  return Promise.all([
     caches.delete(LEGACY_AUDIO_CACHE),
-    caches.open(AUDIO_CACHE).then((cache) => Promise.all(AUDIO_URLS.map((u) => cache.delete(u)))),
+    caches.delete(AUDIO_CACHE),
   ]).then(() => undefined).catch(() => undefined);
-  return clearImplicitCachesPromise;
 }
 
 export function useOffline() {
@@ -29,29 +36,31 @@ export function useOffline() {
       try {
         if (!("caches" in window)) return;
         setSupported(true);
-        const saved = localStorage.getItem(FLAG) === "1";
+        clearLegacyPreferenceFlags();
+        const saved = readOfflinePreference();
         setEnabled(saved);
-        if (!saved) void clearImplicitOfflineCaches();
+        if (!saved) void clearOfflineAudioCaches();
       } catch {}
     };
     check();
     window.addEventListener("bks-offline", check);
-    return () => window.removeEventListener("bks-offline", check);
+    window.addEventListener("storage", check);
+    return () => {
+      window.removeEventListener("bks-offline", check);
+      window.removeEventListener("storage", check);
+    };
   }, []);
 
   const toggle = useCallback(async () => {
     if (busy || !supported) return;
     setBusy(true);
     try {
-      const cache = await caches.open(AUDIO_CACHE);
       if (enabled) {
-        await Promise.all([
-          ...AUDIO_URLS.map((u) => cache.delete(u)),
-          caches.delete(LEGACY_AUDIO_CACHE),
-        ]);
-        localStorage.setItem(FLAG, "0");
+        localStorage.removeItem(FLAG);
+        await clearOfflineAudioCaches();
         setEnabled(false);
       } else {
+        const cache = await caches.open(AUDIO_CACHE);
         await cache.addAll(AUDIO_URLS);
         localStorage.setItem(FLAG, "1");
         setEnabled(true);

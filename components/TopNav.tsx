@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
+import { fallbackTabForPath, isMainTabHref, LAST_ACTIVE_TAB_KEY, tabForPath, type MainTabHref } from "@/lib/navTabs";
+import { useEffect, useState } from "react";
 
 const LINKS = [
   { key: "nav.home", href: "/" },
@@ -15,6 +17,24 @@ const LINKS = [
 export default function TopNav() {
   const path = usePathname();
   const { t } = useLocale();
+  const [activeHref, setActiveHref] = useState<MainTabHref>(() => tabForPath(path) ?? "/");
+
+  useEffect(() => {
+    const directTab = tabForPath(path);
+    if (directTab) {
+      setActiveHref(directTab);
+      try { localStorage.setItem(LAST_ACTIVE_TAB_KEY, directTab); } catch {}
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem(LAST_ACTIVE_TAB_KEY);
+      setActiveHref(isMainTabHref(stored) ? stored : fallbackTabForPath(path));
+    } catch {
+      setActiveHref(fallbackTabForPath(path));
+    }
+  }, [path]);
+
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink/10 bg-base/90 backdrop-blur md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
@@ -27,7 +47,7 @@ export default function TopNav() {
         <nav className="flex items-center gap-6">
           {LINKS.map((l) => (
             <Link key={l.href} href={l.href}
-              className={`text-sm transition ${path === l.href ? "text-coral" : "text-ink/60 hover:text-ink"}`}>
+              className={`text-sm transition ${activeHref === l.href ? "text-coral" : "text-ink/60 hover:text-ink"}`}>
               {t(l.key)}
             </Link>
           ))}
