@@ -33,9 +33,13 @@ test("desktop mini-player is floating and sticky artwork has animated handoff cl
   assert.match(mini, /md:left-auto/);
   assert.match(mini, /md:right-6/);
   assert.match(mini, /md:w-\[440px\]/);
+  assert.match(mini, /lg:grid-cols-\[minmax\(360px,480px\)_minmax\(440px,560px\)\]/);
+  assert.match(mini, /matchMedia\("\(min-width: 1024px\)"\)/);
+  assert.match(mini, /lg:text-5xl/);
   assert.match(mini, /player-art-shell/);
   assert.match(css, /\.player-art-shell/);
   assert.match(css, /height 480ms cubic-bezier/);
+  assert.match(css, /min\(480px, calc\(100vh - 8rem\)\)/);
 });
 
 test("afterglow, sleep ritual, and moments copy exists for every locale", () => {

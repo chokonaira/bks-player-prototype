@@ -89,11 +89,11 @@ input:focus-visible {
 }
 @media (min-width: 1024px) {
   .player-art-expanded {
-    height: 320px;
-    max-width: 320px;
+    height: min(480px, calc(100vh - 8rem));
+    max-width: min(480px, calc(100vh - 8rem));
   }
   .player-art-compact {
-    height: 8rem;
+    height: 9rem;
   }
 }
 .ambient-blob {

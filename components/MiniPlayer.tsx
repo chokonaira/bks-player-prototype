@@ -45,6 +45,10 @@ export default function MiniPlayer() {
   };
 
   const handleExpandedScroll = (event: UIEvent<HTMLDivElement>) => {
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      setArtCompact(false);
+      return;
+    }
     const scrollTop = event.currentTarget.scrollTop;
     setArtCompact((compact) => {
       const next = compact ? scrollTop > 24 : scrollTop > 72;
@@ -97,12 +101,13 @@ export default function MiniPlayer() {
           onScroll={handleExpandedScroll}
           className={`fixed inset-0 z-50 overflow-y-auto bg-base pb-10 transition-colors duration-500 lg:px-8 ${sleepActive ? "sleep-ritual" : ""}`}
         >
+          <div className="lg:grid lg:min-h-screen lg:grid-cols-[minmax(360px,480px)_minmax(440px,560px)] lg:items-start lg:justify-center lg:gap-16 lg:py-12">
           <div
-            className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-[padding,box-shadow,background-color] duration-500 ease-out ${
+            className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-[padding,box-shadow,background-color] duration-500 ease-out lg:top-12 lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-0 ${
               artCompact ? "pb-3 shadow-lg shadow-black/5" : "pb-2"
             }`}
           >
-            <div className="relative mx-auto w-full max-w-sm">
+            <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
               <button
                 onClick={closeExpanded}
                 aria-label={t("player.close")}
@@ -157,9 +162,9 @@ export default function MiniPlayer() {
               </div>
             </div>
           </div>
-          <div className="mx-auto mt-6 w-full max-w-sm lg:max-w-md">
-            <h2 className="font-serif text-3xl tracking-tight text-ink">{p.current.title}</h2>
-            <p className="mt-1 text-ink/50">{p.current.voiceActor}</p>
+          <div className="mx-auto mt-6 w-full max-w-sm px-6 lg:mx-0 lg:mt-11 lg:max-w-none lg:px-0">
+            <h2 className="font-serif text-3xl tracking-tight text-ink lg:text-5xl">{p.current.title}</h2>
+            <p className="mt-1 text-ink/50 lg:text-base">{p.current.voiceActor}</p>
 
             {p.completed && (
               <AfterglowPanel
@@ -178,7 +183,7 @@ export default function MiniPlayer() {
               <span>{fmt(p.time)}</span><span>{fmt(p.duration)}</span>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-8">
+            <div className="mt-6 flex items-center justify-center gap-8 lg:justify-start lg:gap-7">
               <button onClick={() => p.skip(-15)} aria-label="Back 15 seconds" className="relative grid place-items-center text-ink/80">
                 <RotateCcw className="h-8 w-8" strokeWidth={1.6} />
                 <span className="absolute text-[9px] font-semibold">15</span>
@@ -310,6 +315,7 @@ export default function MiniPlayer() {
                 ))}
               </div>
             </div>
+          </div>
           </div>
         </div>
       )}
