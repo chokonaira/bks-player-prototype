@@ -3,10 +3,11 @@
 import { useState, type UIEvent } from "react";
 import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
-import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw } from "lucide-react";
+import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw, Heart } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
 import { useOffline } from "@/lib/useOffline";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
+import { useMoments } from "@/lib/useMoments";
 import SeekBar from "./SeekBar";
 import AfterglowPanel from "./AfterglowPanel";
 
@@ -23,11 +24,13 @@ export default function MiniPlayer() {
   const p = usePlayer();
   const { t } = useLocale();
   const { enabled: savedOffline } = useOffline();
+  const { addMoment } = useMoments();
   const online = useOnlineStatus();
   const locked = !online && !savedOffline;
   const [expanded, setExpanded] = useState(false);
   const [artCompact, setArtCompact] = useState(false);
   const [sleepOpen, setSleepOpen] = useState(false);
+  const [momentSaved, setMomentSaved] = useState(false);
   if (!p.current) return null;
   const sleepActive = p.sleepRemaining !== null;
 
@@ -49,11 +52,17 @@ export default function MiniPlayer() {
     });
   };
 
+  const saveMoment = () => {
+    addMoment(p.current!.id, p.time);
+    setMomentSaved(true);
+    setTimeout(() => setMomentSaved(false), 1800);
+  };
+
   return (
     <>
       {/* COLLAPSED BAR */}
       {!expanded && (
-        <div className="fixed inset-x-0 bottom-14 md:bottom-0 z-40 border-t border-ink/10 bg-surface/95 backdrop-blur">
+        <div className="fixed inset-x-0 bottom-14 z-40 border-t border-ink/10 bg-surface/95 backdrop-blur md:bottom-6 md:left-auto md:right-6 md:w-[440px] md:overflow-hidden md:rounded-2xl md:border md:shadow-2xl md:shadow-black/15">
           <div className="-mb-1 px-1">
             <SeekBar compact value={p.time} max={p.duration} onSeek={p.seek} />
           </div>
@@ -86,10 +95,10 @@ export default function MiniPlayer() {
       {expanded && (
         <div
           onScroll={handleExpandedScroll}
-          className={`fixed inset-0 z-50 overflow-y-auto bg-base pb-10 transition-colors duration-500 ${sleepActive ? "sleep-ritual" : ""}`}
+          className={`fixed inset-0 z-50 overflow-y-auto bg-base pb-10 transition-colors duration-500 lg:px-8 ${sleepActive ? "sleep-ritual" : ""}`}
         >
           <div
-            className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-all duration-300 ${
+            className={`sticky top-0 z-50 bg-base/95 px-6 pt-6 backdrop-blur transition-[padding,box-shadow,background-color] duration-500 ease-out ${
               artCompact ? "pb-3 shadow-lg shadow-black/5" : "pb-2"
             }`}
           >
@@ -97,7 +106,7 @@ export default function MiniPlayer() {
               <button
                 onClick={closeExpanded}
                 aria-label={t("player.close")}
-                className={`transition-all duration-300 ${
+                className={`transition-all duration-500 ease-out ${
                   artCompact
                     ? "absolute left-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-black/45 text-white/90 backdrop-blur hover:bg-black/60"
                     : "mb-4 flex items-center gap-1 text-sm text-ink/60 hover:text-ink"
@@ -106,10 +115,10 @@ export default function MiniPlayer() {
                 <ChevronDown className="h-4 w-4" />
                 <span className={artCompact ? "sr-only" : ""}>{t("player.close")}</span>
               </button>
-              <div className={`relative mx-auto w-full shrink-0 overflow-hidden bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 transition-all duration-300 ease-out ${p.playing ? "ambient-playing" : ""} ${sleepActive ? "sleep-ritual-art" : ""} ${
+              <div className={`player-art-shell relative mx-auto w-full shrink-0 overflow-hidden bg-gradient-to-br ${p.current.cover} shadow-xl shadow-black/20 ${p.playing ? "ambient-playing" : ""} ${sleepActive ? "sleep-ritual-art" : ""} ${
                 artCompact
-                  ? "h-28 max-w-md rounded-xl"
-                  : "aspect-square max-w-[300px] rounded-2xl"
+                  ? "player-art-compact rounded-xl"
+                  : "player-art-expanded rounded-2xl"
               }`}>
                 <span aria-hidden className="cover-texture" />
                 <div className="ambient-blob ambient-blob-a" />
@@ -148,7 +157,7 @@ export default function MiniPlayer() {
               </div>
             </div>
           </div>
-          <div className="mx-auto mt-6 w-full max-w-sm">
+          <div className="mx-auto mt-6 w-full max-w-sm lg:max-w-md">
             <h2 className="font-serif text-3xl tracking-tight text-ink">{p.current.title}</h2>
             <p className="mt-1 text-ink/50">{p.current.voiceActor}</p>
 
@@ -182,6 +191,18 @@ export default function MiniPlayer() {
                 <span className="absolute text-[9px] font-semibold">30</span>
               </button>
             </div>
+
+            <button
+              onClick={saveMoment}
+              className={`mt-5 flex w-full items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-sm transition ${
+                momentSaved
+                  ? "border-coral bg-coral/10 text-coral"
+                  : "border-ink/10 bg-ink/[0.03] text-ink/65 hover:border-coral/40 hover:text-ink"
+              }`}
+            >
+              <Heart className={`h-4 w-4 ${momentSaved ? "fill-coral text-coral" : ""}`} strokeWidth={1.8} />
+              {momentSaved ? t("moments.saved") : t("moments.save")}
+            </button>
 
             <div className="mt-6 flex items-center justify-between">
               {/* speed */}

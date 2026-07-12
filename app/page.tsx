@@ -18,15 +18,15 @@ export default function Home() {
 
       <section className="mb-8">
         <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.forYou")}</h2>
-        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
-          {AUDIOS.map((a) => <AudioCard key={a.id} audio={a} />)}
+        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible">
+          {AUDIOS.map((a) => <AudioCard key={a.id} audio={a} layout="rail" />)}
         </div>
       </section>
 
       <section>
         <h2 className="mb-3 font-serif text-2xl text-ink md:text-3xl">{t("home.newReleases")}</h2>
-        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
-          {[...AUDIOS].reverse().map((a) => <AudioCard key={a.id} audio={a} />)}
+        <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible">
+          {[...AUDIOS].reverse().map((a) => <AudioCard key={a.id} audio={a} layout="rail" />)}
         </div>
       </section>
       </Discovery>

@@ -4,32 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Heart, RotateCcw, X } from "lucide-react";
 import { AUDIOS, initials, type Audio } from "@/lib/mockData";
 import { useFavorites } from "@/lib/useFavorites";
+import { AFTERGLOW_MOODS, recommendationFor } from "@/lib/afterglowRecommendations.mjs";
 import { useLocale } from "./LocaleProvider";
 
 type Mood = "soft" | "wanted" | "comforted" | "part2";
 
-const MOODS: Mood[] = ["soft", "wanted", "comforted", "part2"];
-
-function nextAudio(audio: Audio) {
-  const idx = AUDIOS.findIndex((a) => a.id === audio.id);
-  return AUDIOS[(idx + 1) % AUDIOS.length] ?? AUDIOS[0];
-}
-
-function recommendationFor(audio: Audio, mood: Mood | null) {
-  const pool = AUDIOS.filter((a) => a.id !== audio.id);
-  if (!mood) return nextAudio(audio);
-
-  const match =
-    mood === "comforted"
-      ? pool.find((a) => a.category === "Comfy Boyfriend")
-      : mood === "soft"
-        ? pool.find((a) => a.category === audio.category || a.category === "Friends to Lovers")
-        : mood === "wanted"
-          ? pool.find((a) => a.tier === "Secret" && a.category !== audio.category)
-          : pool.find((a) => a.category === audio.category || a.voiceActor === audio.voiceActor);
-
-  return match ?? nextAudio(audio);
-}
+const MOODS = AFTERGLOW_MOODS as Mood[];
 
 export default function AfterglowPanel({
   audio,
@@ -49,7 +29,7 @@ export default function AfterglowPanel({
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const saved = isFav(audio.id);
   const recommendation = useMemo(
-    () => recommendationFor(audio, selectedMood),
+    () => recommendationFor(AUDIOS, audio, selectedMood) as Audio,
     [audio, selectedMood]
   );
 

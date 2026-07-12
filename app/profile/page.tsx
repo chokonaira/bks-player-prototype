@@ -25,29 +25,31 @@ export default function Profile() {
   const offline = useOffline();
 
   return (
-    <>
-      <header className="mb-8 flex items-center gap-4">
-        <div className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-[#4a2b22] to-[#100c0c] font-serif text-xl text-white/80">
-          TU
-        </div>
-        <div>
-          <h1 className="font-serif text-2xl text-ink md:text-3xl">Test User</h1>
-          <span className="mt-1 inline-block rounded-full bg-coral/15 px-3 py-0.5 text-xs text-coral">
-            Secret Tier
-          </span>
-        </div>
-      </header>
-
-      <section className="mb-8 grid grid-cols-3 gap-3">
-        {STATS.map((s) => (
-          <div key={s.key} className="rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center">
-            <p className="font-serif text-2xl text-ink md:text-3xl">{s.value}</p>
-            <p className="mt-1 text-[11px] text-ink/50">{t(s.key)}</p>
+    <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-8">
+      <aside>
+        <header className="mb-8 flex items-center gap-4 lg:block">
+          <div className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-[#4a2b22] to-[#100c0c] font-serif text-xl text-white/80 lg:h-24 lg:w-24 lg:text-3xl">
+            TU
           </div>
-        ))}
-      </section>
+          <div className="lg:mt-4">
+            <h1 className="font-serif text-2xl text-ink md:text-3xl">Test User</h1>
+            <span className="mt-1 inline-block rounded-full bg-coral/15 px-3 py-0.5 text-xs text-coral">
+              Secret Tier
+            </span>
+          </div>
+        </header>
 
-      <section className="space-y-2">
+        <section className="mb-8 grid grid-cols-3 gap-3 lg:grid-cols-1">
+          {STATS.map((s) => (
+            <div key={s.key} className="rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center lg:text-left">
+              <p className="font-serif text-2xl text-ink md:text-3xl">{s.value}</p>
+              <p className="mt-1 text-[11px] text-ink/50">{t(s.key)}</p>
+            </div>
+          ))}
+        </section>
+      </aside>
+
+      <section className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
         <Link href="/plans"
           className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
@@ -154,6 +156,6 @@ export default function Profile() {
           <span className="text-sm">{signOutNote ? t("profile.stayNote") : t("profile.signOut")}</span>
         </button>
       </section>
-    </>
+    </div>
   );
 }

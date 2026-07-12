@@ -37,8 +37,8 @@ export default function Discovery({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="mb-6">
-        <div className="flex items-center gap-3 rounded-full border border-ink/10 bg-ink/[0.04] px-5 py-3 backdrop-blur transition focus-within:border-coral/50 focus-within:bg-ink/[0.06]">
+      <div className="mb-6 lg:mb-8">
+        <div className="flex items-center gap-3 rounded-full border border-ink/10 bg-ink/[0.04] px-5 py-3 backdrop-blur transition focus-within:border-coral/50 focus-within:bg-ink/[0.06] lg:max-w-2xl">
           <Search className="h-4 w-4 shrink-0 text-ink/40" strokeWidth={1.8} />
           <input
             type="search"
@@ -54,7 +54,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
           )}
         </div>
 
-        <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
           <button
             onClick={() => setCategory(null)}
             className={`shrink-0 rounded-full border px-4 py-1.5 text-xs tracking-wide transition ${
@@ -95,7 +95,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
             </span>
           </div>
           {results.length ? (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
               {results.map((a) => <AudioCard key={a.id} audio={a} />)}
             </div>
           ) : (
@@ -110,7 +110,7 @@ export default function Discovery({ children }: { children: ReactNode }) {
 
           <section className="mt-10">
             <h2 className="mb-4 text-center font-serif text-2xl text-ink md:text-3xl">{t("browse.byMood")}</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
               {CATEGORIES.map((c) => (
                 <button
                   key={c}

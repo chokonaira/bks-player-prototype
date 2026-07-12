@@ -17,7 +17,7 @@ export default function TopNav() {
   const { t } = useLocale();
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink/10 bg-base/90 backdrop-blur md:block">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="font-serif text-lg tracking-wide text-ink">
           Best Kept Secret
           <span className="ml-2 align-middle text-[10px] uppercase tracking-widest text-coral">Prototype</span>

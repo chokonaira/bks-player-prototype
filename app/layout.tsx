@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <OfflineBanner />
           <PlayerProvider>
             <TopNav />
-            <main className="mx-auto max-w-5xl px-4 pb-40 pt-6 md:pt-8">{children}</main>
+            <main className="mx-auto max-w-6xl px-4 pb-40 pt-6 md:px-6 md:pt-8 lg:px-8 lg:pb-36">{children}</main>
             <MiniPlayer />
             <BottomNav />
           </PlayerProvider>

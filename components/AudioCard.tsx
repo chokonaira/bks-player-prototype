@@ -10,7 +10,7 @@ import { useOffline } from "@/lib/useOffline";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import { useLocale } from "./LocaleProvider";
 
-export default function AudioCard({ audio }: { audio: Audio }) {
+export default function AudioCard({ audio, layout = "grid" }: { audio: Audio; layout?: "grid" | "rail" }) {
   const { play, toggle: togglePlay, current, playing } = usePlayer();
   const { isFav, toggle } = useFavorites();
   const { enabled: savedOffline } = useOffline();
@@ -21,8 +21,9 @@ export default function AudioCard({ audio }: { audio: Audio }) {
   const fav = isFav(audio.id);
   // offline without a saved copy -> browsable but not playable, like Spotify
   const locked = !online && !savedOffline;
+  const sizeClass = layout === "rail" ? "w-40 shrink-0 md:w-48 lg:w-full" : "w-full";
   return (
-    <div className={`group w-40 shrink-0 md:w-48 transition ${locked ? "opacity-40 grayscale" : ""}`}>
+    <div className={`group ${sizeClass} transition ${locked ? "opacity-40 grayscale" : ""}`}>
       <div className="relative">
       <button
         onClick={() => !locked && (isCurrent ? togglePlay() : play(audio))}
@@ -65,7 +66,7 @@ export default function AudioCard({ audio }: { audio: Audio }) {
         </button>
       )}
       </div>
-      <Link href={`/audio/${audio.id}`} className="mt-2 block truncate font-serif text-[15px] text-ink hover:text-coral">
+      <Link href={`/audio/${audio.id}`} className="mt-2 block truncate font-serif text-[15px] text-ink hover:text-coral lg:text-base">
         {audio.title}
       </Link>
       <p className="truncate text-xs text-coral/90">{audio.voiceActor}</p>

@@ -5,6 +5,7 @@ import {
   useEffect, useCallback, ReactNode,
 } from "react";
 import { AUDIOS, type Audio } from "@/lib/mockData";
+import { clearProgress, getSavedProgress, saveProgress } from "@/lib/playbackProgress";
 
 type PlayerState = {
   current: Audio | null;
@@ -43,6 +44,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [sleepRemaining, setSleepRemaining] = useState<number | null>(null);
   const currentRef = useRef<Audio | null>(null);
   const speedRef = useRef(1);
+  const lastProgressSaveRef = useRef(0);
 
   // one <audio> element for the whole app -> playback persists across routes
   useEffect(() => {
@@ -52,7 +54,15 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     el.preservesPitch = false;
     (el as any).webkitPreservesPitch = false;
     audioRef.current = el;
-    const onTime = () => setTime(el.currentTime);
+    const onTime = () => {
+      setTime(el.currentTime);
+      const cur = currentRef.current;
+      const now = Date.now();
+      if (cur && el.duration && now - lastProgressSaveRef.current > 1500) {
+        saveProgress(cur.id, el.currentTime, el.duration);
+        lastProgressSaveRef.current = now;
+      }
+    };
     const onMeta = () => setDuration(el.duration || 0);
     const onEnd = () => {
       const cur = currentRef.current;
@@ -60,6 +70,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       setPlaying(false);
       setTime(el.duration || el.currentTime || 0);
       setSleepRemaining(null);
+      clearProgress(cur.id);
       setCompleted(cur);
     };
     el.addEventListener("timeupdate", onTime);
@@ -83,9 +94,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       // resume where the user left off (persisted in real app via events API);
       // progress is a 0..1 fraction of the loaded file, applied once metadata
       // arrives so it stays valid even when the clip length differs from mock data
-      const resumeAt = a.progress ?? 0;
+      const saved = getSavedProgress(a.id);
+      const resumeAt = saved?.time ?? a.progress ?? 0;
       el.addEventListener("loadedmetadata", () => {
-        if (resumeAt && el.duration) el.currentTime = resumeAt * el.duration;
+        if (!el.duration) return;
+        const nextTime = typeof resumeAt === "number" && resumeAt > 1 ? resumeAt : resumeAt * el.duration;
+        if (nextTime > 0 && nextTime < el.duration - 5) el.currentTime = nextTime;
       }, { once: true });
       currentRef.current = a;
       setCurrent(a);

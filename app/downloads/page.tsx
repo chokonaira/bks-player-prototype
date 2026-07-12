@@ -20,7 +20,7 @@ export default function Downloads() {
         </p>
       </header>
       {enabled ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
           {AUDIOS.map((a) => <AudioCard key={a.id} audio={a} />)}
         </div>
       ) : (

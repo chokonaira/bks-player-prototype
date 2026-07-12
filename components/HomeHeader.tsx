@@ -29,10 +29,10 @@ export default function HomeHeader() {
     : t("home.moodToday");
 
   return (
-    <header className="mb-6">
+    <header className="mb-6 lg:mb-8 lg:max-w-3xl">
       <p className="text-[10px] uppercase tracking-[0.25em] text-coral">Prototype</p>
-      <h1 className="mt-1 font-serif text-4xl tracking-tight text-ink md:text-5xl">{title}</h1>
-      <p className="mt-2 text-sm text-ink/50">{sub}</p>
+      <h1 className="mt-1 font-serif text-4xl tracking-tight text-ink md:text-5xl lg:text-6xl">{title}</h1>
+      <p className="mt-2 text-sm text-ink/50 lg:text-base">{sub}</p>
       {savedOffline && (
         <Link href="/downloads"
           className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-coral/10 px-3 py-1 text-xs text-coral transition hover:bg-coral/20">

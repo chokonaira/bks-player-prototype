@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:contracts": "node --test tests/*.test.mjs",
+    "test": "npm run test:contracts && npm run build"
   },
   "dependencies": {
     "lucide-react": "^1.24.0",
