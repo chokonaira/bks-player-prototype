@@ -6,6 +6,7 @@ const serif = Playfair_Display({ subsets: ["latin"], style: ["normal", "italic"]
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 import { PlayerProvider } from "@/components/PlayerProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import MiniPlayer from "@/components/MiniPlayer";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description:
     "Mobile-first player & discovery concept for Best Kept Secret: persistent mini-player, resume, sleep timer, bottom-tab navigation.",
   applicationName: "BKS Player Prototype",
+  manifest: "/manifest.json",
   openGraph: {
     title: "BKS — Player Prototype",
     description:
@@ -45,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{if(localStorage.getItem('bks-theme')==='light')document.documentElement.classList.add('light')}catch(e){}`,
           }}
         />
+        <ServiceWorkerRegister />
         <LocaleProvider>
           <PlayerProvider>
             <TopNav />

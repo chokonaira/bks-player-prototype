@@ -3,9 +3,10 @@
 import { usePlayer } from "./PlayerProvider";
 import { CONTINUE } from "@/lib/mockData";
 import { useLocale } from "./LocaleProvider";
+import { Play, Pause } from "lucide-react";
 
 export default function ContinueListeningRail() {
-  const { play } = usePlayer();
+  const { play, current, playing } = usePlayer();
   const { t } = useLocale();
   if (!CONTINUE.length) return null;
   return (
@@ -14,8 +15,12 @@ export default function ContinueListeningRail() {
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
         {CONTINUE.map((a) => (
           <button key={a.id} onClick={() => play(a)}
-            className="flex w-64 shrink-0 items-center gap-3 rounded-xl border border-ink/10 bg-ink/[0.03] p-3 text-left shadow-lg shadow-black/5 transition hover:bg-ink/[0.06]">
-            <div className={`h-14 w-14 shrink-0 rounded-lg bg-gradient-to-br ${a.cover}`} />
+            className="group flex w-64 shrink-0 items-center gap-3 rounded-xl border border-ink/10 bg-ink/[0.03] p-3 text-left shadow-lg shadow-black/5 transition hover:bg-ink/[0.06]">
+            <div className={`relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br ${a.cover}`}>
+              {current?.id === a.id && playing
+                ? <Pause className="h-5 w-5 fill-current text-white opacity-0 transition group-hover:opacity-100" />
+                : <Play className="h-5 w-5 translate-x-px fill-current text-white opacity-0 transition group-hover:opacity-100" />}
+            </div>
             <div className="min-w-0 flex-1">
               <p className="truncate font-serif text-[15px] text-ink">{a.title}</p>
               <p className="truncate text-xs text-ink/50">{a.voiceActor}</p>

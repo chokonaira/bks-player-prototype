@@ -79,6 +79,10 @@ const en: Dict = {
   "profile.fade": "min · fade",
   "profile.signOut": "Sign out",
   "profile.stayNote": "Prototype mode — you're staying ♥",
+  "profile.offline": "Offline listening",
+  "profile.offlineOn": "Saved on this device — plays without internet",
+  "profile.offlineOff": "Save audios to listen without internet",
+  "profile.saving": "Saving…",
 };
 
 const es: Dict = {
@@ -152,6 +156,10 @@ const es: Dict = {
   "profile.fade": "min · fundido",
   "profile.signOut": "Cerrar sesión",
   "profile.stayNote": "Modo prototipo — te quedas ♥",
+  "profile.offline": "Escucha sin conexión",
+  "profile.offlineOn": "Guardado en este dispositivo — se reproduce sin internet",
+  "profile.offlineOff": "Guarda los audios para escuchar sin internet",
+  "profile.saving": "Guardando…",
 };
 
 const fr: Dict = {
@@ -225,6 +233,10 @@ const fr: Dict = {
   "profile.fade": "min · fondu",
   "profile.signOut": "Se déconnecter",
   "profile.stayNote": "Mode prototype — vous restez ♥",
+  "profile.offline": "Écoute hors ligne",
+  "profile.offlineOn": "Enregistré sur cet appareil — lecture sans internet",
+  "profile.offlineOff": "Enregistrez les audios pour écouter sans internet",
+  "profile.saving": "Enregistrement…",
 };
 
 export const DICT: Record<Locale, Dict> = { en, es, fr };

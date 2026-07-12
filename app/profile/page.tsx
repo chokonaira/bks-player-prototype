@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, CreditCard, Moon, Sun, Globe, ChevronRight, LogOut } from "lucide-react";
+import { Bell, CreditCard, Moon, Sun, Globe, Download, ChevronRight, LogOut } from "lucide-react";
 import { useTheme } from "@/lib/useTheme";
 import { useLocale } from "@/components/LocaleProvider";
 import { LOCALES } from "@/lib/i18n";
+import { useOffline } from "@/lib/useOffline";
 
 const STATS = [
   { key: "profile.hours", value: "42" },
@@ -21,6 +22,7 @@ export default function Profile() {
   const [signOutNote, setSignOutNote] = useState(false);
   const { light, toggleTheme } = useTheme();
   const { locale, setLocale, t } = useLocale();
+  const offline = useOffline();
 
   return (
     <>
@@ -125,6 +127,22 @@ export default function Profile() {
             ))}
           </span>
         </div>
+
+        <button onClick={offline.toggle} disabled={!offline.supported || offline.busy}
+          className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06] disabled:opacity-60">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink/5 text-ink/70">
+            <Download className="h-5 w-5" strokeWidth={1.8} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm text-ink">{t("profile.offline")}</span>
+            <span className="block truncate text-xs text-ink/50">
+              {offline.busy ? t("profile.saving") : offline.enabled ? t("profile.offlineOn") : t("profile.offlineOff")}
+            </span>
+          </span>
+          <span className={`relative h-6 w-11 shrink-0 rounded-full transition ${offline.enabled ? "bg-coral" : "bg-ink/15"}`}>
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${offline.enabled ? "left-[22px]" : "left-0.5"}`} />
+          </span>
+        </button>
 
         <button onClick={() => setSleepIdx((i) => (i + 1) % SLEEP_DEFAULTS.length)}
           className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-left transition hover:bg-ink/[0.06]">
