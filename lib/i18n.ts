@@ -83,6 +83,8 @@ const en: Dict = {
   "profile.offlineOn": "Saved on this device — plays without internet",
   "profile.offlineOff": "Save audios to listen without internet",
   "profile.saving": "Saving…",
+  "offline.banner": "You're offline — your saved audios still play",
+  "offline.saved": "Saved",
 };
 
 const es: Dict = {
@@ -160,6 +162,8 @@ const es: Dict = {
   "profile.offlineOn": "Guardado en este dispositivo — se reproduce sin internet",
   "profile.offlineOff": "Guarda los audios para escuchar sin internet",
   "profile.saving": "Guardando…",
+  "offline.banner": "Sin conexión — tus audios guardados siguen sonando",
+  "offline.saved": "Guardado",
 };
 
 const fr: Dict = {
@@ -237,6 +241,8 @@ const fr: Dict = {
   "profile.offlineOn": "Enregistré sur cet appareil — lecture sans internet",
   "profile.offlineOff": "Enregistrez les audios pour écouter sans internet",
   "profile.saving": "Enregistrement…",
+  "offline.banner": "Hors ligne — vos audios enregistrés fonctionnent toujours",
+  "offline.saved": "Enregistré",
 };
 
 export const DICT: Record<Locale, Dict> = { en, es, fr };

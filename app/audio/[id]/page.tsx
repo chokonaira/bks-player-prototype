@@ -7,13 +7,15 @@ import { usePlayer } from "@/components/PlayerProvider";
 import { useFavorites } from "@/lib/useFavorites";
 import { useLocalAdditions } from "@/lib/useLocalAdditions";
 import { useLocale } from "@/components/LocaleProvider";
-import { Play, Pause, Heart, Bookmark, Clock } from "lucide-react";
+import { Play, Pause, Heart, Bookmark, Clock, ArrowDownToLine } from "lucide-react";
+import { useOffline } from "@/lib/useOffline";
 
 export default function AudioDetail({ params }: { params: { id: string } }) {
   const audio = AUDIOS.find((a) => a.id === params.id);
   const { play, toggle, current, playing } = usePlayer();
   const { t } = useLocale();
   const { isFav, toggle: toggleFav } = useFavorites();
+  const { enabled: savedOffline } = useOffline();
   const [liked, setLiked] = useState(false);
   const { items: comments, add: addComment } = useLocalAdditions<Comment>(
     `bks-comments-${params.id}`,
@@ -57,6 +59,11 @@ export default function AudioDetail({ params }: { params: { id: string } }) {
         <span className="flex items-center gap-1 rounded-full bg-ink/5 px-3 py-1 text-ink/60">
           <Clock className="h-3 w-3" strokeWidth={1.8} /> {Math.round(audio.duration / 60)} {t("player.min")}
         </span>
+        {savedOffline && (
+          <span className="flex items-center gap-1 rounded-full bg-coral/15 px-3 py-1 text-coral">
+            <ArrowDownToLine className="h-3 w-3" strokeWidth={2} /> {t("offline.saved")}
+          </span>
+        )}
       </div>
 
       {/* actions */}

@@ -12,7 +12,7 @@ export function useOffline() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    (async () => {
+    const check = async () => {
       try {
         if (!("caches" in window)) return;
         setSupported(true);
@@ -20,7 +20,10 @@ export function useOffline() {
         const hits = await Promise.all(AUDIO_URLS.map((u) => cache.match(u)));
         setEnabled(hits.every(Boolean));
       } catch {}
-    })();
+    };
+    check();
+    window.addEventListener("bks-offline", check);
+    return () => window.removeEventListener("bks-offline", check);
   }, []);
 
   const toggle = useCallback(async () => {
@@ -37,6 +40,7 @@ export function useOffline() {
       }
     } catch {}
     setBusy(false);
+    window.dispatchEvent(new Event("bks-offline"));
   }, [busy, enabled, supported]);
 
   return { supported, enabled, busy, toggle, count: AUDIO_URLS.length };

@@ -7,6 +7,7 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 import { PlayerProvider } from "@/components/PlayerProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import OfflineBanner from "@/components/OfflineBanner";
 import MiniPlayer from "@/components/MiniPlayer";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <ServiceWorkerRegister />
         <LocaleProvider>
+          <OfflineBanner />
           <PlayerProvider>
             <TopNav />
             <main className="mx-auto max-w-5xl px-4 pb-40 pt-6 md:pt-8">{children}</main>
