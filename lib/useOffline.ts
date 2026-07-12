@@ -43,5 +43,6 @@ export function useOffline() {
     window.dispatchEvent(new Event("bks-offline"));
   }, [busy, enabled, supported]);
 
-  return { supported, enabled, busy, toggle, count: AUDIO_URLS.length };
+  // count reflects saved titles, not underlying files (titles share placeholder clips)
+  return { supported, enabled, busy, toggle, count: AUDIOS.length };
 }

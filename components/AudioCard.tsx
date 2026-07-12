@@ -4,6 +4,7 @@ import { usePlayer } from "./PlayerProvider";
 import { initials, type Audio } from "@/lib/mockData";
 import { useFavorites } from "@/lib/useFavorites";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Play, Pause, Heart, ArrowDownToLine } from "lucide-react";
 import { useOffline } from "@/lib/useOffline";
 import { useLocale } from "./LocaleProvider";
@@ -13,10 +14,12 @@ export default function AudioCard({ audio }: { audio: Audio }) {
   const { isFav, toggle } = useFavorites();
   const { enabled: savedOffline } = useOffline();
   const { t } = useLocale();
+  const router = useRouter();
   const isCurrent = current?.id === audio.id;
   const fav = isFav(audio.id);
   return (
-    <div className="group relative w-40 shrink-0 md:w-48">
+    <div className="group w-40 shrink-0 md:w-48">
+      <div className="relative">
       <button
         onClick={() => play(audio)}
         className={`relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br ${audio.cover} shadow-lg shadow-black/10
@@ -38,16 +41,6 @@ export default function AudioCard({ audio }: { audio: Audio }) {
         <span className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] text-white/80">
           {audio.tier}
         </span>
-        {savedOffline && (
-          <span
-            role="img"
-            aria-label={t("offline.saved")}
-            title={t("offline.saved")}
-            className="absolute bottom-2 right-2 grid h-5 w-5 place-items-center rounded-full bg-coral text-black shadow"
-          >
-            <ArrowDownToLine className="h-3 w-3" strokeWidth={2.2} />
-          </span>
-        )}
       </button>
       <button
         onClick={() => toggle(audio.id)}
@@ -56,6 +49,17 @@ export default function AudioCard({ audio }: { audio: Audio }) {
       >
         <Heart className={`h-3.5 w-3.5 transition ${fav ? "fill-coral text-coral" : "text-white/70"}`} strokeWidth={1.8} />
       </button>
+      {savedOffline && (
+        <button
+          onClick={() => router.push("/downloads")}
+          aria-label={t("offline.saved")}
+          title={t("offline.saved")}
+          className="absolute bottom-2 right-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-coral text-black shadow transition hover:scale-110"
+        >
+          <ArrowDownToLine className="h-3 w-3" strokeWidth={2.2} />
+        </button>
+      )}
+      </div>
       <Link href={`/audio/${audio.id}`} className="mt-2 block truncate font-serif text-[15px] text-ink hover:text-coral">
         {audio.title}
       </Link>
