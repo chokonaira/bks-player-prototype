@@ -106,6 +106,41 @@ export const AUDIOS: Audio[] = [
       { author: "ember&ash", when: "6d ago", text: "Best subscription of the year, not even close." },
     ],
   },
+  {
+    id: "908",
+    title: "Midnight Voice Note",
+    voiceActor: "Mr. Chambers",
+    writer: "Mara Vale",
+    duration: 1980,
+    category: "Comfy Boyfriend",
+    tier: "Honey",
+    cover: "from-[#26322d] to-[#080d0b]",
+    src: "/audio/sample-2.mp3",
+    description:
+      "A sleepy voice note arrives just when the room feels too quiet. Low laughter, soft reassurance, and a promise to call properly in the morning.",
+    likes: 29,
+    comments: [
+      { author: "softstatic", when: "12h ago", text: "This one feels tiny in the best way. Like a secret meant just for you." },
+    ],
+  },
+  {
+    id: "1204",
+    title: "The Safe House",
+    voiceActor: "Mr. Chambers, Mr. Gallo",
+    writer: "Nicole K",
+    duration: 4380,
+    category: "In Charge",
+    tier: "Secret",
+    cover: "from-[#33261f] to-[#090806]",
+    src: "/audio/sample-1.mp3",
+    description:
+      "The plan was supposed to be simple: keep you hidden until morning. But locked doors, low voices, and unfinished history make the night feel dangerous in a different way.",
+    likes: 86,
+    comments: [
+      { author: "chapterlocked", when: "1d ago", text: "The tension in this one is unreal. I need the sequel immediately." },
+      { author: "velvetline", when: "2d ago", text: "Mr. Chambers and Mr. Gallo together is unfair." },
+    ],
+  },
 ];
 
 export const CONTINUE = AUDIOS.filter((a) => a.progress);

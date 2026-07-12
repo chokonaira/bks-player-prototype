@@ -20,6 +20,13 @@ test("desktop library views use wider shell and lg grids", () => {
   assert.match(read("components/Discovery.tsx"), /lg:flex-wrap/);
 });
 
+test("mock catalog is large enough to exercise shelves and queue depth", () => {
+  const mockData = read("lib/mockData.ts");
+  assert.ok(count(mockData, "id:") >= 7);
+  assert.match(mockData, /Midnight Voice Note/);
+  assert.match(mockData, /The Safe House/);
+});
+
 test("grid cards fill mobile columns while home shelves expand per segment", () => {
   const audioCard = read("components/AudioCard.tsx");
   const audioShelf = read("components/AudioShelf.tsx");
