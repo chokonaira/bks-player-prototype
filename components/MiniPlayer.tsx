@@ -5,6 +5,7 @@ import { usePlayer } from "./PlayerProvider";
 import { AUDIOS, initials } from "@/lib/mockData";
 import { Play, Pause, Moon, ChevronDown, RotateCcw, RotateCw } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
+import SeekBar from "./SeekBar";
 
 const fmt = (s: number) => {
   if (!s || isNaN(s)) return "0:00";
@@ -22,15 +23,13 @@ export default function MiniPlayer() {
   const [sleepOpen, setSleepOpen] = useState(false);
   if (!p.current) return null;
 
-  const pct = p.duration ? (p.time / p.duration) * 100 : 0;
-
   return (
     <>
       {/* COLLAPSED BAR */}
       {!expanded && (
         <div className="fixed inset-x-0 bottom-14 md:bottom-0 z-40 border-t border-ink/10 bg-surface/95 backdrop-blur">
-          <div className="h-0.5 w-full bg-ink/10">
-            <div className="h-full bg-coral" style={{ width: `${pct}%` }} />
+          <div className="-mb-1 px-1">
+            <SeekBar compact value={p.time} max={p.duration} onSeek={p.seek} />
           </div>
           <div className="flex items-center gap-3 px-4 py-2">
             <button onClick={() => setExpanded(true)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
@@ -78,11 +77,9 @@ export default function MiniPlayer() {
             <h2 className="font-serif text-3xl tracking-tight text-ink">{p.current.title}</h2>
             <p className="mt-1 text-ink/50">{p.current.voiceActor}</p>
 
-            <input
-              type="range" min={0} max={p.duration || 0} value={p.time}
-              onChange={(e) => p.seek(Number(e.target.value))}
-              className="mt-6 w-full accent-coral"
-            />
+            <div className="mt-6">
+              <SeekBar value={p.time} max={p.duration} onSeek={p.seek} />
+            </div>
             <div className="flex justify-between text-xs text-ink/40">
               <span>{fmt(p.time)}</span><span>{fmt(p.duration)}</span>
             </div>
