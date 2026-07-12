@@ -47,7 +47,7 @@ export default function MiniPlayer() {
 
       {/* EXPANDED FULL-SCREEN */}
       {expanded && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-[#0d0d0d] px-6 pb-10 pt-6">
+        <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#0d0d0d] px-6 pb-10 pt-6">
           <button onClick={() => setExpanded(false)} className="self-start text-white/60">▼ Close</button>
           <div className={`mx-auto mt-6 aspect-square w-full max-w-sm rounded-2xl bg-gradient-to-br ${p.current.cover}`} />
           <div className="mx-auto mt-8 w-full max-w-sm">
